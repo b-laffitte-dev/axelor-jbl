@@ -5,58 +5,58 @@
 
   <!-- ===================== Listes ===================== -->
 
-  <action-view name="action-jbl-repair-order-all" title="Ordres de réparation" model="com.axelor.apps.jbl.db.JblRepairOrder">
+  <action-view name="action-jbl-repair-order-all" title="View.JblRepairOrder.Grid.Title" model="com.axelor.apps.jbl.db.JblRepairOrder">
     <view type="grid" name="jbl-repair-order-grid"/>
     <view type="form" name="jbl-repair-order-form"/>
     <view type="kanban" name="jbl-repair-order-kanban"/>
   </action-view>
 
   <!-- Devis = SaleOrder (axelor-sale), filtré sur les statuts "devis" (brouillon / finalisé) -->
-  <action-view name="action-jbl-quotation-all" title="Devis" model="com.axelor.apps.sale.db.SaleOrder">
+  <action-view name="action-jbl-quotation-all" title="menu.jbl.quotations" model="com.axelor.apps.sale.db.SaleOrder">
     <view type="grid" name="sale-order-grid"/>
     <view type="form" name="sale-order-form"/>
     <domain>self.statusSelect IN (1, 2)</domain>
   </action-view>
 
   <!-- Factures clients = Invoice (axelor-account), operationTypeSelect 3 = vente client -->
-  <action-view name="action-jbl-invoice-all" title="Factures clients" model="com.axelor.apps.account.db.Invoice">
+  <action-view name="action-jbl-invoice-all" title="menu.jbl.invoices" model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-grid"/>
     <view type="form" name="invoice-form"/>
     <domain>self.operationTypeSelect = 3</domain>
   </action-view>
 
   <!-- Matériels clients = Equipment (axelor-intervention) -->
-  <action-view name="action-jbl-equipment-all" title="Matériels clients" model="com.axelor.apps.intervention.db.Equipment">
+  <action-view name="action-jbl-equipment-all" title="menu.jbl.equipments" model="com.axelor.apps.intervention.db.Equipment">
     <view type="grid" name="equipment-grid"/>
     <view type="form" name="equipment-form"/>
   </action-view>
 
   <!-- Stock = StockMove / StockLocationLine (axelor-stock) -->
-  <action-view name="action-jbl-stock-move-all" title="Mouvements de stock" model="com.axelor.apps.stock.db.StockMove">
+  <action-view name="action-jbl-stock-move-all" title="menu.jbl.stock.movements" model="com.axelor.apps.stock.db.StockMove">
     <view type="grid" name="stock-move-grid"/>
     <view type="form" name="stock-move-form"/>
   </action-view>
 
-  <action-view name="action-jbl-stock-levels" title="Niveaux de stock" model="com.axelor.apps.stock.db.StockLocationLine">
+  <action-view name="action-jbl-stock-levels" title="menu.jbl.stock.levels" model="com.axelor.apps.stock.db.StockLocationLine">
     <view type="grid" name="stock-location-line-grid"/>
     <view type="form" name="stock-location-line-form"/>
   </action-view>
 
   <!-- Fiches clients / fournisseurs (Partner du module axelor-base, filtré) -->
-  <action-view name="action-jbl-partner-clients" title="Clients" model="com.axelor.apps.base.db.Partner">
+  <action-view name="action-jbl-partner-clients" title="menu.jbl.clients" model="com.axelor.apps.base.db.Partner">
     <view type="grid" name="partner-grid"/>
     <view type="form" name="partner-form"/>
     <domain>self.isCustomer = true</domain>
   </action-view>
 
-  <action-view name="action-jbl-partner-suppliers" title="Fournisseurs" model="com.axelor.apps.base.db.Partner">
+  <action-view name="action-jbl-partner-suppliers" title="menu.jbl.suppliers" model="com.axelor.apps.base.db.Partner">
     <view type="grid" name="partner-grid"/>
     <view type="form" name="partner-form"/>
     <domain>self.isSupplier = true</domain>
   </action-view>
 
   <!-- Catalogue des pièces détachées (Product du module axelor-base) -->
-  <action-view name="action-jbl-product-parts" title="Pièces détachées" model="com.axelor.apps.base.db.Product">
+  <action-view name="action-jbl-product-parts" title="menu.jbl.products" model="com.axelor.apps.base.db.Product">
     <view type="grid" name="product-grid"/>
     <view type="form" name="product-form"/>
     <domain>self.productTypeSelect = 'storable'</domain>

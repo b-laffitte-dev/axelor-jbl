@@ -16,37 +16,37 @@
   <!-- Fiche d'ordre de réparation (OR) -->
   <entity name="JblRepairOrder" cacheable="true">
     <![CDATA[Fiche d'ordre de réparation d'un matériel de jardinage]]>
-    <string name="name" title="N° d'OR" unique="true" readonly="true" copy="false"
+    <string name="name" title="Title.JblRepairOrder.Name" unique="true" readonly="true" copy="false"
             sequence="jbl.repair.order.seq"/>
-    <integer name="statusSelect" title="Statut" selection="jbl.repair.order.status.select" default="0"/>
-    <integer name="sequence" title="Séquence" default="0" hidden="true"/>
-    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Client" required="true"/>
-    <many-to-one name="equipment" ref="com.axelor.apps.intervention.db.Equipment" title="Matériel"/>
-    <string name="materialDescription" title="Matériel (si non enregistré)" large="true"/>
-    <date name="receptionDate" title="Date de réception" required="true"/>
-    <date name="plannedDate" title="Date prévue de restitution"/>
-    <many-to-one name="technician" ref="com.axelor.auth.db.User" title="Technicien"/>
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Société"/>
-    <string name="diagnosis" title="Diagnostic / panne constatée" large="true"/>
-    <string name="workDone" title="Travaux réalisés" large="true"/>
-    <string name="internalNotes" title="Notes internes" large="true"/>
-    <one-to-many name="repairLineList" ref="com.axelor.apps.jbl.db.JblRepairLine" mappedBy="repairOrder" title="Lignes de réparation"/>
-    <decimal name="totalHT" title="Total HT (indicatif)" precision="19" scale="2" readonly="true"/>
-    <many-to-one name="quotation" ref="com.axelor.apps.sale.db.SaleOrder" title="Devis (SaleOrder)"/>
-    <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Facture (Invoice)"/>
-    <many-to-one name="stockMove" ref="com.axelor.apps.stock.db.StockMove" title="Mouvement de stock (conso. pièces)"/>
+    <integer name="statusSelect" title="Title.JblRepairOrder.StatusSelect" selection="jbl.repair.order.status.select" default="0"/>
+    <integer name="sequence" title="Title.JblRepairOrder.Sequence" default="0" hidden="true"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Title.JblRepairOrder.Partner" required="true"/>
+    <many-to-one name="equipment" ref="com.axelor.apps.intervention.db.Equipment" title="Title.JblRepairOrder.Equipment"/>
+    <string name="materialDescription" title="Title.JblRepairOrder.MaterialDescription" large="true"/>
+    <date name="receptionDate" title="Title.JblRepairOrder.ReceptionDate" required="true"/>
+    <date name="plannedDate" title="Title.JblRepairOrder.PlannedDate"/>
+    <many-to-one name="technician" ref="com.axelor.auth.db.User" title="Title.JblRepairOrder.Technician"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Title.JblRepairOrder.Company"/>
+    <string name="diagnosis" title="Title.JblRepairOrder.Diagnosis" large="true"/>
+    <string name="workDone" title="Title.JblRepairOrder.WorkDone" large="true"/>
+    <string name="internalNotes" title="Title.JblRepairOrder.InternalNotes" large="true"/>
+    <one-to-many name="repairLineList" ref="com.axelor.apps.jbl.db.JblRepairLine" mappedBy="repairOrder" title="Title.JblRepairOrder.RepairLineList"/>
+    <decimal name="totalHT" title="Title.JblRepairOrder.TotalHT" precision="19" scale="2" readonly="true"/>
+    <many-to-one name="quotation" ref="com.axelor.apps.sale.db.SaleOrder" title="Title.JblRepairOrder.Quotation"/>
+    <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Title.JblRepairOrder.Invoice"/>
+    <many-to-one name="stockMove" ref="com.axelor.apps.stock.db.StockMove" title="Title.JblRepairOrder.StockMove"/>
   </entity>
 
   <!-- Ligne d'OR : pièce détachée, main d'oeuvre ou forfait -->
   <entity name="JblRepairLine" cacheable="true">
     <![CDATA[Ligne d'un ordre de réparation : pièce détachée, main d'œuvre ou forfait]]>
-    <many-to-one name="repairOrder" ref="com.axelor.apps.jbl.db.JblRepairOrder" title="Ordre de réparation"/>
-    <integer name="lineTypeSelect" title="Type de ligne" selection="jbl.repair.line.type.select" required="true" default="0"/>
-    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Pièce détachée"/>
-    <string name="description" title="Désignation" required="true"/>
-    <decimal name="quantity" title="Qté (ou heures pour la main d'œuvre)" precision="19" scale="3" default="1"/>
-    <decimal name="unitPriceHT" title="PU HT" precision="19" scale="2"/>
-    <decimal name="totalHT" title="Total HT" precision="19" scale="2" readonly="true"/>
+    <many-to-one name="repairOrder" ref="com.axelor.apps.jbl.db.JblRepairOrder" title="Title.JblRepairLine.RepairOrder"/>
+    <integer name="lineTypeSelect" title="Title.JblRepairLine.LineTypeSelect" selection="jbl.repair.line.type.select" required="true" default="0"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Title.JblRepairLine.Product"/>
+    <string name="description" title="Title.JblRepairLine.Description" required="true"/>
+    <decimal name="quantity" title="Title.JblRepairLine.Quantity" precision="19" scale="3" default="1"/>
+    <decimal name="unitPriceHT" title="Title.JblRepairLine.UnitPriceHT" precision="19" scale="2"/>
+    <decimal name="totalHT" title="Title.JblRepairLine.TotalHT" precision="19" scale="2" readonly="true"/>
   </entity>
 
 </domain-models>

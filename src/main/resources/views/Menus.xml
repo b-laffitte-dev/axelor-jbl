@@ -3,30 +3,30 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
-  <menuitem name="menu-jbl-root" title="Atelier JBL" icon="fa-wrench" order="-100"/>
+  <menuitem name="menu-jbl-root" title="menu.jbl.root" icon="fa-wrench" order="-100" top="true"/>
 
-  <menuitem name="menu-jbl-orders" parent="menu-jbl-root" title="Ordres de réparation"
+  <menuitem name="menu-jbl-orders" parent="menu-jbl-root" title="menu.jbl.orders"
             action="action-jbl-repair-order-all" order="10"/>
-  <menuitem name="menu-jbl-quotations" parent="menu-jbl-root" title="Devis (SaleOrder)"
+  <menuitem name="menu-jbl-quotations" parent="menu-jbl-root" title="menu.jbl.quotations"
             action="action-jbl-quotation-all" order="20"/>
-  <menuitem name="menu-jbl-invoices" parent="menu-jbl-root" title="Factures (Invoice)"
+  <menuitem name="menu-jbl-invoices" parent="menu-jbl-root" title="menu.jbl.invoices"
             action="action-jbl-invoice-all" order="30"/>
-  <menuitem name="menu-jbl-equipments" parent="menu-jbl-root" title="Matériels clients (Equipment)"
+  <menuitem name="menu-jbl-equipments" parent="menu-jbl-root" title="menu.jbl.equipments"
             action="action-jbl-equipment-all" order="40"/>
 
-  <menuitem name="menu-jbl-contacts" parent="menu-jbl-root" title="Contacts" order="50"/>
-  <menuitem name="menu-jbl-clients" parent="menu-jbl-contacts" title="Clients"
+  <menuitem name="menu-jbl-contacts" parent="menu-jbl-root" title="menu.jbl.contacts" order="50"/>
+  <menuitem name="menu-jbl-clients" parent="menu-jbl-contacts" title="menu.jbl.clients"
             action="action-jbl-partner-clients" order="10"/>
-  <menuitem name="menu-jbl-suppliers" parent="menu-jbl-contacts" title="Fournisseurs"
+  <menuitem name="menu-jbl-suppliers" parent="menu-jbl-contacts" title="menu.jbl.suppliers"
             action="action-jbl-partner-suppliers" order="20"/>
 
-  <menuitem name="menu-jbl-stock" parent="menu-jbl-root" title="Stock" order="60"/>
-  <menuitem name="menu-jbl-stock-levels" parent="menu-jbl-stock" title="Niveaux de stock"
+  <menuitem name="menu-jbl-stock" parent="menu-jbl-root" title="menu.jbl.stock" order="60"/>
+  <menuitem name="menu-jbl-stock-levels" parent="menu-jbl-stock" title="menu.jbl.stock.levels"
             action="action-jbl-stock-levels" order="10"/>
-  <menuitem name="menu-jbl-stock-movements" parent="menu-jbl-stock" title="Mouvements de stock"
+  <menuitem name="menu-jbl-stock-movements" parent="menu-jbl-stock" title="menu.jbl.stock.movements"
             action="action-jbl-stock-move-all" order="20"/>
 
-  <menuitem name="menu-jbl-products" parent="menu-jbl-root" title="Pièces détachées (Product)"
+  <menuitem name="menu-jbl-products" parent="menu-jbl-root" title="menu.jbl.products"
             action="action-jbl-product-parts" order="70"/>
 
 </object-views>

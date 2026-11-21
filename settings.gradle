@@ -3,9 +3,22 @@ pluginManagement {
     mavenCentral()
     gradlePluginPortal()
     maven { url 'https://repository.axelor.com/nexus/repository/maven-public/' }
+    // AOP 10.0 / AOS 10.x (édition commerciale Guardian) : dépôt enterprise avec credentials.
+    // Décommenter et renseigner axelorMavenUsername / axelorMavenPassword (gradle.properties
+    // ou -PaxelorMavenUsername=... -PaxelorMavenPassword=...) pour activer la migration 10.0.
+    // maven {
+    //   name = 'maven-enterprise'
+    //   url = 'https://repository.axelor.com/nexus/repository/maven-enterprise/'
+    //   credentials {
+    //     username = project.findProperty('axelorMavenUsername')
+    //     password = project.findProperty('axelorMavenPassword')
+    //   }
+    // }
   }
   plugins {
+    // Dernière version open source publiée : 8.2.6. La 10.0.+ n'existe que sur maven-enterprise.
     id 'com.axelor.app' version '8.2.6'
+    // Migration AOP 10.0 (avec licence Guardian) : id 'com.axelor.app' version '10.0.+'
   }
 }
 
@@ -17,6 +30,15 @@ dependencyResolutionManagement {
       }
     }
     maven { url 'https://repository.axelor.com/nexus/repository/maven-public/' }
+    // Idem : dépôt enterprise pour AOS 10.x (voir commentaire pluginManagement ci-dessus).
+    // maven {
+    //   name = 'maven-enterprise'
+    //   url = 'https://repository.axelor.com/nexus/repository/maven-enterprise/'
+    //   credentials {
+    //     username = project.findProperty('axelorMavenUsername')
+    //     password = project.findProperty('axelorMavenPassword')
+    //   }
+    // }
   }
 }
 

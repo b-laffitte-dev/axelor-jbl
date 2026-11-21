@@ -3,7 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
-  <grid name="jbl-repair-order-grid" title="Ordres de réparation" model="com.axelor.apps.jbl.db.JblRepairOrder">
+  <grid name="jbl-repair-order-grid" title="View.JblRepairOrder.Grid.Title" model="com.axelor.apps.jbl.db.JblRepairOrder"
+        orderBy="-receptionDate">
     <field name="name"/>
     <field name="statusSelect" widget="NavSelect"/>
     <field name="partner"/>
@@ -16,7 +17,7 @@
     <field name="totalHT"/>
   </grid>
 
-  <kanban name="jbl-repair-order-kanban" title="Pipeline des réparations" model="com.axelor.apps.jbl.db.JblRepairOrder"
+  <kanban name="jbl-repair-order-kanban" title="View.JblRepairOrder.Kanban.Title" model="com.axelor.apps.jbl.db.JblRepairOrder"
           columnBy="statusSelect" sequenceBy="sequence">
     <field name="name"/>
     <field name="partner"/>
@@ -36,9 +37,9 @@
     ]]></template>
   </kanban>
 
-  <form name="jbl-repair-order-form" title="Ordre de réparation" model="com.axelor.apps.jbl.db.JblRepairOrder" width="large"
+  <form name="jbl-repair-order-form" title="View.JblRepairOrder.Form.Title" model="com.axelor.apps.jbl.db.JblRepairOrder" width="large"
         onNew="action-jbl-repair-order-onnew" onSave="action-jbl-repair-order-method-compute">
-    <panel title="Ordre de réparation">
+    <panel title="Panel.JblRepairOrder.Main">
       <field name="name" colSpan="3" readonly="true"/>
       <field name="statusSelect" colSpan="3" widget="NavSelect" readonly="true"/>
       <field name="receptionDate" colSpan="3"/>
@@ -52,34 +53,34 @@
       <field name="workDone" colSpan="12" widget="html"/>
       <field name="internalNotes" colSpan="12" widget="html"/>
     </panel>
-    <panel title="Lignes de réparation (pièces / main d'œuvre)">
+    <panel title="Panel.JblRepairOrder.Lines">
       <panel-related name="repairLineListPanel" field="repairLineList" colSpan="12"
                      grid-view="jbl-repair-line-grid" form-view="jbl-repair-line-form"
                      canNew="true" canEdit="true" canRemove="true"/>
     </panel>
-    <panel title="Total">
+    <panel title="Panel.JblRepairOrder.Total">
       <field name="totalHT" colSpan="3" readonly="true"/>
     </panel>
-    <panel title="Documents liés (devis / facture / stock)">
+    <panel title="Panel.JblRepairOrder.Documents">
       <field name="quotation" colSpan="4" readonly="true"/>
       <field name="invoice" colSpan="4" readonly="true"/>
       <field name="stockMove" colSpan="4" readonly="true"/>
     </panel>
     <panel sidebar="true">
-      <button name="btnStart" title="Démarrer la réparation" colSpan="12"
+      <button name="btnStart" title="Button.JblRepairOrder.Start" colSpan="12"
               onClick="save,action-jbl-repair-order-method-start" showIf="statusSelect == 0"/>
-      <button name="btnComplete" title="Terminer (consomme les pièces en stock)" colSpan="12"
+      <button name="btnComplete" title="Button.JblRepairOrder.Complete" colSpan="12"
               onClick="save,action-jbl-repair-order-method-complete" showIf="statusSelect == 1"/>
-      <button name="btnToQuotation" title="Générer un devis" colSpan="12"
+      <button name="btnToQuotation" title="Button.JblRepairOrder.ToQuotation" colSpan="12"
               onClick="save,action-jbl-repair-order-method-to-quotation" showIf="quotation == null"/>
-      <button name="btnToInvoice" title="Générer la facture" colSpan="12"
+      <button name="btnToInvoice" title="Button.JblRepairOrder.ToInvoice" colSpan="12"
               onClick="save,action-jbl-repair-order-method-to-invoice" showIf="statusSelect == 2 &amp;&amp; invoice == null"/>
-      <button name="btnCancel" title="Annuler l'OR" colSpan="12"
+      <button name="btnCancel" title="Button.JblRepairOrder.Cancel" colSpan="12"
               onClick="save,action-jbl-repair-order-method-cancel" showIf="statusSelect &lt; 2"/>
     </panel>
   </form>
 
-  <grid name="jbl-repair-line-grid" title="Lignes de réparation" model="com.axelor.apps.jbl.db.JblRepairLine">
+  <grid name="jbl-repair-line-grid" title="View.JblRepairLine.Grid.Title" model="com.axelor.apps.jbl.db.JblRepairLine">
     <field name="lineTypeSelect" widget="NavSelect"/>
     <field name="product"/>
     <field name="description"/>
@@ -88,7 +89,7 @@
     <field name="totalHT"/>
   </grid>
 
-  <form name="jbl-repair-line-form" title="Ligne de réparation" model="com.axelor.apps.jbl.db.JblRepairLine"
+  <form name="jbl-repair-line-form" title="View.JblRepairLine.Form.Title" model="com.axelor.apps.jbl.db.JblRepairLine"
         onSave="action-jbl-repair-order-method-compute">
     <panel>
       <field name="lineTypeSelect" colSpan="6" widget="NavSelect"/>

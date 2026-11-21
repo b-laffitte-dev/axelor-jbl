@@ -16,4 +16,17 @@
     <bind column="next" to="next"/>
   </input>
 
+  <!-- Permissions Shiro de base sur les entités JBL (deny-all par défaut, admins = accès total) -->
+  <input file="jbl_permissions.csv" separator=";" type="com.axelor.auth.db.Permission"
+    search="self.name = :name">
+    <bind column="name" to="name"/>
+    <bind column="object" to="object"/>
+    <bind column="canRead" to="canRead" eval="canRead == '1' ? 'true' : 'false'"/>
+    <bind column="canWrite" to="canWrite" eval="canWrite == '1' ? 'true' : 'false'"/>
+    <bind column="canCreate" to="canCreate" eval="canCreate == '1' ? 'true' : 'false'"/>
+    <bind column="canRemove" to="canRemove" eval="canRemove == '1' ? 'true' : 'false'"/>
+    <bind column="canExport" to="canExport" eval="canExport == '1' ? 'true' : 'false'"/>
+    <bind column="groupSet" to="groupSet" search="self.code = :groupSet"/>
+  </input>
+
 </csv-inputs>

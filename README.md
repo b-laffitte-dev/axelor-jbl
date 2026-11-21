@@ -6,6 +6,23 @@ Application AOP/AOS pour un **atelier de réparation de matériel de jardinage**
 Cible : **Axelor Open Platform 8.2.6** (plugin Gradle `com.axelor.app` 8.2.6, Java 21, Tomcat 10.1 / Jakarta EE 10)
 + modules publiés **AOS 9.2.1** (`com.axelor.apps:axelor-*:9.2.1`, construits sur AOP 8.2).
 
+> **Migration AOP 10.0 — bloquée sans licence commerciale.** AOP 10.0 (release 2026-10-23)
+> est une édition unique sous licence Axelor (Guardian) : le plugin Gradle `com.axelor.app`
+> et les artifacts AOS 10.x ne sont PAS publiés sur le dépôt public `maven-public`, mais sur
+> `https://repository.axelor.com/nexus/repository/maven-enterprise/` (credentials requis).
+> Dernières versions open source disponibles : plugin **8.2.6**, AOS **9.2.1** (9.2.2-SNAPSHOT en dev).
+>
+> **Pour migrer en 10.0 avec une licence Guardian :**
+> 1. Décommenter le dépôt `maven-enterprise` dans `settings.gradle` et renseigner
+>    `axelorMavenUsername` / `axelorMavenPassword` (gradle.properties ou `-P...`).
+> 2. `settings.gradle` : `id 'com.axelor.app' version '10.0.+'`
+> 3. `gradle.properties` : `axelorBaseVersion = 10.0.+` (AOS 10.x construit sur AOP 10.0)
+> 4. XSD XML : passer en `_10.0.xsd` (domain-models, object-views, data-import, data-queries)
+> 5. `./gradlew generateCode` puis `./gradlew build` — corriger les breaking changes
+>    (voir `docs.axelor.com/adk/10.0` : générateur de code en merge, Hibernate 6.6 /
+>    Jakarta Persistence 3.1, nouveaux événements d'auth tracés).
+> Le bloc commenté dans `settings.gradle` est prêt à l'emploi.
+
 ## V1 : on ne réinvente plus la roue
 
 Le module ne contient plus que le **cœur métier atelier** (`JblRepairOrder` + `JblRepairLine`) ;
@@ -122,6 +139,11 @@ Menus top-level visibles après nettoyage : **Administration** (axelor-base/core
   (`CustomerRequest` -> `Intervention`) pour les interventions sur site.
 
 ## Note
+
+- `context.app = com.axelor.studio.app.service.ScriptAppService` dans `axelor-config.properties`
+  est **obligatoire** dès qu'un module AOS (sale, account, stock...) est embarqué : les menus de ces
+  modules évaluent `__config__.app.isApp('sale')` etc. Sans cette propriété, `__config__.app` est
+  null et chaque chargement de menu logue des NPE (`Unable to evaluate menu ...`).
 
 - Versions épinglées : plugin `com.axelor.app` **8.2.6** (settings.gradle) et `axelor-base` **9.2.1**
   (gradle.properties `axelorBaseVersion`). Ne PAS remettre de wildcard `8.2.+` sur axelor-base :

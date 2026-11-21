@@ -8,17 +8,17 @@
        mouvements de stock et équipements utilisent les sélections natives des modules AOS. -->
 
   <selection name="jbl.repair.order.status.select">
-    <option value="0">Brouillon</option>
-    <option value="1">Réparation en cours</option>
-    <option value="2">Terminée</option>
-    <option value="3">Facturée</option>
-    <option value="4">Annulée</option>
+    <option value="0">Selection.JblRepairOrder.Status.0</option>
+    <option value="1">Selection.JblRepairOrder.Status.1</option>
+    <option value="2">Selection.JblRepairOrder.Status.2</option>
+    <option value="3">Selection.JblRepairOrder.Status.3</option>
+    <option value="4">Selection.JblRepairOrder.Status.4</option>
   </selection>
 
   <selection name="jbl.repair.line.type.select">
-    <option value="0">Pièce détachée</option>
-    <option value="1">Main d'œuvre</option>
-    <option value="2">Forfait / divers</option>
+    <option value="0">Selection.JblRepairLine.Type.0</option>
+    <option value="1">Selection.JblRepairLine.Type.1</option>
+    <option value="2">Selection.JblRepairLine.Type.2</option>
   </selection>
 
 </object-views>
