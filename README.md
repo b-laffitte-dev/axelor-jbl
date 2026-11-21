@@ -1,63 +1,68 @@
-# JBL Atelier — V0 (Axelor Open Platform)
+# JBL Atelier — V1 (Axelor Open Platform)
 
-Application AOP/AOF pour un **atelier de réparation de matériel de jardinage**
+Application AOP/AOS pour un **atelier de réparation de matériel de jardinage**
 (tondeuses, tronçonneuses, débroussailleuses, motoculteurs, taille-haies...).
 
 Cible : **Axelor Open Platform 8.2.6** (plugin Gradle `com.axelor.app` 8.2.6, Java 21, Tomcat 10.1 / Jakarta EE 10)
-+ module métier publié **axelor-base 9.2.1** (AOS 9.x, construit sur AOP 8.2).
++ modules publiés **AOS 9.2.1** (`com.axelor.apps:axelor-*:9.2.1`, construits sur AOP 8.2).
 
-## Fonctionnalités V0
+## V1 : on ne réinvente plus la roue
 
-| Objet | Implémentation |
-|---|---|
-| Fichier client | `Partner` (axelor-base), menu Clients filtré `isCustomer = true` |
-| Fournisseur | `Partner` (axelor-base), menu Fournisseurs filtré `isSupplier = true` |
-| Pièces détachées | `Product` (axelor-base), menu filtré `productTypeSelect = 'storable'` |
-| Fiche d'ordre de réparation | `JblRepairOrder` + lignes `JblRepairLine` (pièce / main d'œuvre / forfait) |
-| Devis | `JblQuotation` + `JblQuotationLine`, généré depuis l'OR (bouton « Confirmer ») |
-| Facture | `JblInvoice` + `JblInvoiceLine`, générée depuis le devis accepté |
-| Stock | `JblStock` (qte par pièce, seuil d'alerte) + `JblStockMovement` (entrées/sorties/ajustements) |
-| Matériel client | `JblEquipment` (type, marque, modèle, n° de série, propriétaire) |
+Le module ne contient plus que le **cœur métier atelier** (`JblRepairOrder` + `JblRepairLine`) ;
+tout le reste vient de l'écosystème Axelor :
+
+| Objet | Module AOS | Entité native |
+|---|---|---|
+| Fichier client / fournisseur | axelor-base | `Partner` (`isCustomer` / `isSupplier`) |
+| Pièces détachées | axelor-base | `Product` (`productTypeSelect = 'storable'`) |
+| Matériel client | **axelor-intervention** | `Equipment` (code séquentiel, type, propriétaire, photos) |
+| Devis | **axelor-sale** | `SaleOrder` / `SaleOrderLine` (totaux HT/TVA/TTC, validité, PDF natifs) |
+| Facture + compta + paiements | **axelor-account** | `Invoice` / `InvoiceLine` / `Payment` / `Move` (ventilation, lettrage) |
+| Stock | **axelor-stock** | `StockMove` / `StockMoveLine` / `StockLocation` / `StockLocationLine` / `Inventory` |
+| Commandes fournisseurs | **axelor-purchase** | `PurchaseOrder` |
+| Pont vente → stock → facture | **axelor-supplychain** | `SaleOrder` confirmé → `StockMove` → `Invoice` |
+| Numérotation OR | axelor-base | `Sequence` `jbl.repair.order.seq` → `OR-2026-00001` (data-init) |
+| Fiche d'ordre de réparation | **JBL (custom)** | `JblRepairOrder` + `JblRepairLine`, liés à `Equipment`, `SaleOrder`, `Invoice`, `StockMove` |
 
 ### Workflow d'un ordre de réparation
 
-Le flux est **Devis → Ordre de réparation → Facture** :
+`OR : Brouillon → Réparation en cours → Terminée → Facturée` (ou `Annulée`)
 
-`Devis brouillon → Envoyé → Accepté` puis `OR : Brouillon → Réparation en cours → Terminée → Facturée` (ou `Annulée`)
-
-1. **Créer le devis** (client + matériel concerné + lignes pièce/main d'œuvre/forfait).
-2. **Envoyer puis faire accepter le devis** ; sur le devis accepté, le bouton
-   « Générer l'ordre de réparation » crée l'OR (lignes copiées du devis, devis d'origine lié).
+1. **Créer l'OR** (client + matériel `Equipment` + lignes pièce/main d'œuvre/forfait) ; le n° `OR-2026-00001`
+   est posé automatiquement par la `Sequence` AOP.
+2. Bouton **« Générer un devis »** : crée un `SaleOrder` (lignes copiées de l'OR) — envoi/acceptation/PDF
+   gérés nativement par axelor-sale.
 3. **Démarrer la réparation** : statut « en cours ».
-4. **Terminer** : consomme automatiquement les pièces détachées en stock
-   (mouvements de sortie `MOUV-...`, blocage si stock insuffisant).
-5. Sur l'OR terminé, **Générer la facture** (lignes copiées de l'OR) ; à la validation
-   de la facture, l'OR passe à « Facturée ».
+4. **Terminer** : consomme automatiquement les pièces détachées via un `StockMove` interne
+   (magasin → emplacement virtuel « Atelier ») réalisé avec `StockMoveService.realize` :
+   blocage natif si stock insuffisant, niveaux de stock mis à jour.
+5. Sur l'OR terminé, **« Générer la facture »** : crée une `Invoice` (axelor-account, brouillon,
+   totaux calculés par `InvoiceService.compute`) ; validation/ventilation/paiement natifs.
 
 Une **vue kanban** (`Pipeline des réparations`) est disponible sur la liste des OR
 (colonnes = statuts, drag & drop pour changer de statut).
-
-Numérotation : `OR-2026-00001`, `DEV-2026-00001`, `FACT-2026-00001`, `MOUV-2026-00001`
-(générée par `JblNumberService`, à remplacer par une `Sequence` AOP en V1).
 
 ## Arborescence
 
 ```text
 axelor-jbl/
-├── settings.gradle / build.gradle / gradle.properties   # build AOP (plugin com.axelor.app 8.2.+)
+├── settings.gradle / build.gradle / gradle.properties   # build AOP (plugin com.axelor.app 8.2.6)
 ├── src/main/resources/
 │   ├── axelor-config.properties                          # config appli + PostgreSQL
 │   ├── META-INF/persistence.xml
-│   ├── domains/Jbl.xml                                   # 9 entités (génération code AOP)
+│   ├── data-init/                                        # input-config.xml + input/jbl_sequence.csv
+│   │                                                     # (Sequence "jbl.repair.order.seq" => OR-2026-00001)
+│   ├── domains/Jbl.xml                                   # 2 entités custom (génération code AOP)
 │   ├── views/                                            # Selects, grilles, formulaires, Menus, Actions
 │   │                                                     # (depuis AOP 8.x, actions et vues vivent dans
 │   │                                                     #  views/*.xml à racine <object-views>)
 │   └── i18n/messages_fr.properties
 └── src/main/java/com/axelor/apps/jbl/
+    ├── db/repo/JblRepairOrderManagementRepository.java   # numérotation via JpaSequence
     ├── module/JblModule.java                             # bindings Guice
-    ├── service/                                          # JblNumberService, RepairOrderService,
-    │                                                     # QuotationService, JblInvoiceService, JblStockService
-    └── web/                                              # contrôleurs (ActionRequest/ActionResponse)
+    ├── service/RepairOrderService(Impl).java            # workflow OR : conso StockMove,
+    │                                                     # création SaleOrder / Invoice
+    └── web/JblRepairOrderController.java                 # contrôleur (ActionRequest/ActionResponse)
 ```
 
 ## Prérequis et lancement
@@ -103,15 +108,18 @@ docker exec axelor-jbl-db-1 psql -U axelor -d axelor_jbl -f /tmp/clean.sql
 Menus top-level visibles après nettoyage : **Administration** (axelor-base/core) et
 **Atelier JBL**. Seul l'utilisateur `admin` est conservé.
 
-## Pistes pour la V1
+## Pistes pour la suite
 
-- Remplacer la numérotation maison par les `Sequence` d'axelor-base.
-- Brancher les vrais modules métier : `axelor-sale` (SaleOrder = devis), `axelor-account`
-  (Invoice = facture comptable), `axelor-stock` (StockMove, emplacements, inventaires),
-  `axelor-purchase` (commandes fournisseurs) — dépendances `implementation "com.axelor.apps:axelor-xxx:${axelorVersion}"`.
-- Impressions PDF (devis/facture/OR) via le moteur de rapports AOP (BIRT) + modèles `.rptdesign`.
-- Portail client pour suivre l'avancement de sa réparation, photos avant/après, signature électronique du devis.
-- Alertes de stock sous le seuil (`minQuantity`) : tableau de bord ou job planifié.
+- Configurer les `App*` des modules (AppSale, AppAccount, AppStock, AppIntervention) via
+  *Administration -> Apps* : multi-societe, devises, journaux/comptes comptables pour la ventilation
+  des factures, generation auto facture/stock depuis le SaleOrder (axelor-supplychain).
+- Impressions PDF de l'OR via le moteur BIRT AOP + modele `.rptdesign` (devis/facture ont deja
+  leurs PDF natifs).
+- Portail client (`axelor-client-portal` / `axelor-portal`) pour suivre l'avancement de la
+  reparation, photos avant/apres sur l'`Equipment` (`MetaFile`), signature electronique du devis.
+- Alertes de stock sous seuil : tableau de bord axelor-stock ou `Batch` planifie.
+- SAV : `axelor-helpdesk` (`Ticket` avec SLA et timers) ou `axelor-intervention`
+  (`CustomerRequest` -> `Intervention`) pour les interventions sur site.
 
 ## Note
 

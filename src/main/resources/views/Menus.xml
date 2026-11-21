@@ -7,11 +7,11 @@
 
   <menuitem name="menu-jbl-orders" parent="menu-jbl-root" title="Ordres de réparation"
             action="action-jbl-repair-order-all" order="10"/>
-  <menuitem name="menu-jbl-quotations" parent="menu-jbl-root" title="Devis"
+  <menuitem name="menu-jbl-quotations" parent="menu-jbl-root" title="Devis (SaleOrder)"
             action="action-jbl-quotation-all" order="20"/>
-  <menuitem name="menu-jbl-invoices" parent="menu-jbl-root" title="Factures"
+  <menuitem name="menu-jbl-invoices" parent="menu-jbl-root" title="Factures (Invoice)"
             action="action-jbl-invoice-all" order="30"/>
-  <menuitem name="menu-jbl-equipments" parent="menu-jbl-root" title="Matériels clients"
+  <menuitem name="menu-jbl-equipments" parent="menu-jbl-root" title="Matériels clients (Equipment)"
             action="action-jbl-equipment-all" order="40"/>
 
   <menuitem name="menu-jbl-contacts" parent="menu-jbl-root" title="Contacts" order="50"/>
@@ -21,12 +21,12 @@
             action="action-jbl-partner-suppliers" order="20"/>
 
   <menuitem name="menu-jbl-stock" parent="menu-jbl-root" title="Stock" order="60"/>
-  <menuitem name="menu-jbl-stock-parts" parent="menu-jbl-stock" title="Stock pièces"
-            action="action-jbl-stock-all" order="10"/>
+  <menuitem name="menu-jbl-stock-levels" parent="menu-jbl-stock" title="Niveaux de stock"
+            action="action-jbl-stock-levels" order="10"/>
   <menuitem name="menu-jbl-stock-movements" parent="menu-jbl-stock" title="Mouvements de stock"
-            action="action-jbl-stock-movement-all" order="20"/>
+            action="action-jbl-stock-move-all" order="20"/>
 
-  <menuitem name="menu-jbl-products" parent="menu-jbl-root" title="Pièces détachées"
+  <menuitem name="menu-jbl-products" parent="menu-jbl-root" title="Pièces détachées (Product)"
             action="action-jbl-product-parts" order="70"/>
 
 </object-views>

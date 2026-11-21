@@ -1,8 +1,9 @@
 package com.axelor.apps.jbl.service;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.AxelorMessageException;
-import com.axelor.apps.jbl.db.JblInvoice;
 import com.axelor.apps.jbl.db.JblRepairOrder;
+import com.axelor.apps.sale.db.SaleOrder;
 
 public interface RepairOrderService {
 
@@ -18,19 +19,22 @@ public interface RepairOrderService {
   int LINE_LABOR = 1;
   int LINE_FLAT = 2;
 
-  /** Recalcule les totaux de l'OR à partir de ses lignes (HT, TVA, TTC). */
+  /** Recalcule le total HT indicatif de l'OR à partir de ses lignes. */
   void compute(JblRepairOrder repairOrder);
 
   /** Passe l'OR en "Réparation en cours". */
   void startRepair(JblRepairOrder repairOrder);
 
-  /** Termine l'OR : consomme les pièces détachées en stock, puis passe à "Terminée". */
+  /** Termine l'OR : consomme les pièces détachées via un StockMove (axelor-stock), puis "Terminée". */
   void complete(JblRepairOrder repairOrder) throws AxelorMessageException;
 
-  /** Génère la facture à partir des lignes de l'OR (OR en statut "Terminée"). */
-  JblInvoice createInvoice(JblRepairOrder repairOrder);
+  /** Génère la facture (account.Invoice) à partir des lignes de l'OR (OR "Terminée"). */
+  Invoice createInvoice(JblRepairOrder repairOrder) throws AxelorMessageException;
 
-  /** Marque l'OR comme facturé (appelé à la validation de la facture). */
+  /** Génère le devis (sale.SaleOrder) à partir des lignes de l'OR. */
+  SaleOrder createQuotation(JblRepairOrder repairOrder) throws AxelorMessageException;
+
+  /** Marque l'OR comme facturé. */
   void markInvoiced(JblRepairOrder repairOrder);
 
   /** Annule l'OR. */

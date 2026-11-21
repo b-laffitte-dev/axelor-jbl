@@ -11,29 +11,35 @@
     <view type="kanban" name="jbl-repair-order-kanban"/>
   </action-view>
 
-  <action-view name="action-jbl-quotation-all" title="Devis" model="com.axelor.apps.jbl.db.JblQuotation">
-    <view type="grid" name="jbl-quotation-grid"/>
-    <view type="form" name="jbl-quotation-form"/>
+  <!-- Devis = SaleOrder (axelor-sale), filtré sur les statuts "devis" (brouillon / finalisé) -->
+  <action-view name="action-jbl-quotation-all" title="Devis" model="com.axelor.apps.sale.db.SaleOrder">
+    <view type="grid" name="sale-order-grid"/>
+    <view type="form" name="sale-order-form"/>
+    <domain>self.statusSelect IN (1, 2)</domain>
   </action-view>
 
-  <action-view name="action-jbl-invoice-all" title="Factures" model="com.axelor.apps.jbl.db.JblInvoice">
-    <view type="grid" name="jbl-invoice-grid"/>
-    <view type="form" name="jbl-invoice-form"/>
+  <!-- Factures clients = Invoice (axelor-account), operationTypeSelect 3 = vente client -->
+  <action-view name="action-jbl-invoice-all" title="Factures clients" model="com.axelor.apps.account.db.Invoice">
+    <view type="grid" name="invoice-grid"/>
+    <view type="form" name="invoice-form"/>
+    <domain>self.operationTypeSelect = 3</domain>
   </action-view>
 
-  <action-view name="action-jbl-equipment-all" title="Matériels clients" model="com.axelor.apps.jbl.db.JblEquipment">
-    <view type="grid" name="jbl-equipment-grid"/>
-    <view type="form" name="jbl-equipment-form"/>
+  <!-- Matériels clients = Equipment (axelor-intervention) -->
+  <action-view name="action-jbl-equipment-all" title="Matériels clients" model="com.axelor.apps.intervention.db.Equipment">
+    <view type="grid" name="equipment-grid"/>
+    <view type="form" name="equipment-form"/>
   </action-view>
 
-  <action-view name="action-jbl-stock-all" title="Stock pièces détachées" model="com.axelor.apps.jbl.db.JblStock">
-    <view type="grid" name="jbl-stock-grid"/>
-    <view type="form" name="jbl-stock-form"/>
+  <!-- Stock = StockMove / StockLocationLine (axelor-stock) -->
+  <action-view name="action-jbl-stock-move-all" title="Mouvements de stock" model="com.axelor.apps.stock.db.StockMove">
+    <view type="grid" name="stock-move-grid"/>
+    <view type="form" name="stock-move-form"/>
   </action-view>
 
-  <action-view name="action-jbl-stock-movement-all" title="Mouvements de stock" model="com.axelor.apps.jbl.db.JblStockMovement">
-    <view type="grid" name="jbl-stock-movement-grid"/>
-    <view type="form" name="jbl-stock-movement-form"/>
+  <action-view name="action-jbl-stock-levels" title="Niveaux de stock" model="com.axelor.apps.stock.db.StockLocationLine">
+    <view type="grid" name="stock-location-line-grid"/>
+    <view type="form" name="stock-location-line-form"/>
   </action-view>
 
   <!-- Fiches clients / fournisseurs (Partner du module axelor-base, filtré) -->
@@ -56,7 +62,7 @@
     <domain>self.productTypeSelect = 'storable'</domain>
   </action-view>
 
-  <!-- ===================== Méthodes (contrôleurs) ===================== -->
+  <!-- ===================== Méthodes (contrôleur) ===================== -->
 
   <action-method name="action-jbl-repair-order-onnew">
     <call class="com.axelor.apps.jbl.web.JblRepairOrderController" method="onNew"/>
@@ -73,50 +79,11 @@
   <action-method name="action-jbl-repair-order-method-to-invoice">
     <call class="com.axelor.apps.jbl.web.JblRepairOrderController" method="createInvoice"/>
   </action-method>
+  <action-method name="action-jbl-repair-order-method-to-quotation">
+    <call class="com.axelor.apps.jbl.web.JblRepairOrderController" method="createQuotation"/>
+  </action-method>
   <action-method name="action-jbl-repair-order-method-cancel">
     <call class="com.axelor.apps.jbl.web.JblRepairOrderController" method="cancel"/>
-  </action-method>
-
-  <action-method name="action-jbl-quotation-onnew">
-    <call class="com.axelor.apps.jbl.web.JblQuotationController" method="onNew"/>
-  </action-method>
-  <action-method name="action-jbl-quotation-method-compute">
-    <call class="com.axelor.apps.jbl.web.JblQuotationController" method="compute"/>
-  </action-method>
-  <action-method name="action-jbl-quotation-method-send">
-    <call class="com.axelor.apps.jbl.web.JblQuotationController" method="send"/>
-  </action-method>
-  <action-method name="action-jbl-quotation-method-accept">
-    <call class="com.axelor.apps.jbl.web.JblQuotationController" method="accept"/>
-  </action-method>
-  <action-method name="action-jbl-quotation-method-refuse">
-    <call class="com.axelor.apps.jbl.web.JblQuotationController" method="refuse"/>
-  </action-method>
-  <action-method name="action-jbl-quotation-method-to-repair-order">
-    <call class="com.axelor.apps.jbl.web.JblQuotationController" method="createRepairOrder"/>
-  </action-method>
-
-  <action-method name="action-jbl-invoice-onnew">
-    <call class="com.axelor.apps.jbl.web.JblInvoiceController" method="onNew"/>
-  </action-method>
-  <action-method name="action-jbl-invoice-method-compute">
-    <call class="com.axelor.apps.jbl.web.JblInvoiceController" method="compute"/>
-  </action-method>
-  <action-method name="action-jbl-invoice-method-validate">
-    <call class="com.axelor.apps.jbl.web.JblInvoiceController" method="validate"/>
-  </action-method>
-  <action-method name="action-jbl-invoice-method-pay">
-    <call class="com.axelor.apps.jbl.web.JblInvoiceController" method="recordPayment"/>
-  </action-method>
-  <action-method name="action-jbl-invoice-method-cancel">
-    <call class="com.axelor.apps.jbl.web.JblInvoiceController" method="cancel"/>
-  </action-method>
-
-  <action-method name="action-jbl-stock-movement-onnew">
-    <call class="com.axelor.apps.jbl.web.JblStockController" method="onNew"/>
-  </action-method>
-  <action-method name="action-jbl-stock-movement-method-apply">
-    <call class="com.axelor.apps.jbl.web.JblStockController" method="apply"/>
   </action-method>
 
 </object-views>

@@ -30,20 +30,34 @@ war {
 }
 
 dependencies {
-  // Module métier Axelor (AOS 9.x, construit sur AOP 8.2) : tiers (Partner = client/fournisseur),
-  // produits, sociétés, utilisateurs...
+  // Modules métier Axelor (AOS 9.x, construits sur AOP 8.2) — même version que la plateforme
+  // (axelorBaseVersion = 9.x, voir gradle.properties) : tous publiés sur repository.axelor.com.
   // - axelorBaseVersion (9.x) est la version des modules publiés com.axelor.apps:*, indépendante de la
   //   version de la plateforme embarquée par le plugin com.axelor.app (8.2.6, voir settings.gradle).
   // - axelor-base 9.x embarque déjà les addons jakarta (axelor-utils 4.x, axelor-studio 4.x) requis
   //   par Tomcat 10.1 / Jakarta EE 10.
-  // - Exclusion de org.codehaus.groovy (groovy-all 3.x legacy du POM d'axelor-base) : AOP 8.2 embarque
+  // - Exclusion de org.codehaus.groovy (groovy-all 3.x legacy des POM AOS) : AOP 8.2 embarque
   //   déjà org.apache.groovy 4.x via axelor-core, les deux entrent en conflit de capacité Gradle.
-  implementation("com.axelor.apps:axelor-base:${axelorBaseVersion}") {
-    exclude group: 'org.codehaus.groovy'
-    // axelor-studio et axelor-message restent dans le classpath : axelor-base 9.x
-    // référence leurs classes (ScriptAppService, MessageServiceImpl) au démarrage.
-    // Ils sont rendus invisibles côté UI (menus nettoyés en base, voir README).
+  def aos = { String module ->
+    implementation("com.axelor.apps:${module}:${axelorBaseVersion}") {
+      exclude group: 'org.codehaus.groovy'
+    }
   }
+
+  // Base : tiers (Partner), produits, sociétés, utilisateurs, séquences, adresses, TVA...
+  aos 'axelor-base'
+  // Devis : SaleOrder / SaleOrderLine (remplace JblQuotation)
+  aos 'axelor-sale'
+  // Factures + compta + paiements : Invoice / InvoiceLine / Payment / Move (remplace JblInvoice)
+  aos 'axelor-account'
+  // Stock réel : StockMove, emplacements, niveaux de stock, inventaires (remplace JblStock/Movement)
+  aos 'axelor-stock'
+  // Commandes fournisseurs de pièces détachées
+  aos 'axelor-purchase'
+  // Matériels clients (Equipment) + demandes/interventions SAV
+  aos 'axelor-intervention'
+  // Pont natif Vente -> Stock -> Facture (SaleOrder confirmé -> StockMove -> Invoice)
+  aos 'axelor-supplychain'
 
   // Driver JDBC PostgreSQL embarqué dans le WAR (AOP ne le fournit pas)
   runtimeOnly 'org.postgresql:postgresql:42.7.14'

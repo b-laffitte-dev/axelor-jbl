@@ -12,7 +12,8 @@
     <field name="plannedDate"/>
     <field name="technician"/>
     <field name="quotation"/>
-    <field name="totalTTC"/>
+    <field name="invoice"/>
+    <field name="totalHT"/>
   </grid>
 
   <kanban name="jbl-repair-order-kanban" title="Pipeline des réparations" model="com.axelor.apps.jbl.db.JblRepairOrder"
@@ -22,7 +23,7 @@
     <field name="equipment"/>
     <field name="plannedDate"/>
     <field name="technician"/>
-    <field name="totalTTC"/>
+    <field name="totalHT"/>
     <template><![CDATA[
       <div class="kanban-card">
         <strong>{{name}}</strong><br/>
@@ -30,7 +31,7 @@
         {{#equipment}}{{equipment.name}}<br/>{{/equipment}}
         {{#technician}}Tech : {{technician.name}}<br/>{{/technician}}
         Prévu : {{plannedDate}}<br/>
-        <b>{{totalTTC}} € TTC</b>
+        <b>{{totalHT}} € HT</b>
       </div>
     ]]></template>
   </kanban>
@@ -56,27 +57,25 @@
                      grid-view="jbl-repair-line-grid" form-view="jbl-repair-line-form"
                      canNew="true" canEdit="true" canRemove="true"/>
     </panel>
-    <panel title="Totaux">
+    <panel title="Total">
       <field name="totalHT" colSpan="3" readonly="true"/>
-      <field name="vatRate" colSpan="3"/>
-      <field name="totalVAT" colSpan="3" readonly="true"/>
-      <field name="totalTTC" colSpan="3" readonly="true"/>
     </panel>
-    <panel title="Documents liés">
-      <field name="quotation" colSpan="6" readonly="true"/>
-      <field name="invoice" colSpan="6" readonly="true"/>
+    <panel title="Documents liés (devis / facture / stock)">
+      <field name="quotation" colSpan="4" readonly="true"/>
+      <field name="invoice" colSpan="4" readonly="true"/>
+      <field name="stockMove" colSpan="4" readonly="true"/>
     </panel>
     <panel sidebar="true">
-      <button name="btnCompute" title="Recalculer les totaux" colSpan="12"
-              onClick="save,action-jbl-repair-order-method-compute"/>
       <button name="btnStart" title="Démarrer la réparation" colSpan="12"
               onClick="save,action-jbl-repair-order-method-start" showIf="statusSelect == 0"/>
       <button name="btnComplete" title="Terminer (consomme les pièces en stock)" colSpan="12"
               onClick="save,action-jbl-repair-order-method-complete" showIf="statusSelect == 1"/>
+      <button name="btnToQuotation" title="Générer un devis" colSpan="12"
+              onClick="save,action-jbl-repair-order-method-to-quotation" showIf="quotation == null"/>
       <button name="btnToInvoice" title="Générer la facture" colSpan="12"
-              onClick="save,action-jbl-repair-order-method-to-invoice" showIf="statusSelect == 2"/>
+              onClick="save,action-jbl-repair-order-method-to-invoice" showIf="statusSelect == 2 &amp;&amp; invoice == null"/>
       <button name="btnCancel" title="Annuler l'OR" colSpan="12"
-              onClick="save,action-jbl-repair-order-method-cancel" showIf="statusSelect &lt; 3"/>
+              onClick="save,action-jbl-repair-order-method-cancel" showIf="statusSelect &lt; 2"/>
     </panel>
   </form>
 
