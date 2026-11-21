@@ -30,6 +30,18 @@ war {
 }
 
 dependencies {
-  // Module métier Axelor : tiers (Partner = client/fournisseur), produits, sociétés, utilisateurs...
-  implementation "com.axelor.apps:axelor-base:${axelorVersion}"
+  // Module métier Axelor (AOS 9.x, construit sur AOP 8.2) : tiers (Partner = client/fournisseur),
+  // produits, sociétés, utilisateurs...
+  // - axelorBaseVersion (9.x) est la version des modules publiés com.axelor.apps:*, indépendante de la
+  //   version de la plateforme embarquée par le plugin com.axelor.app (8.2.6, voir settings.gradle).
+  // - axelor-base 9.x embarque déjà les addons jakarta (axelor-utils 4.x, axelor-studio 4.x) requis
+  //   par Tomcat 10.1 / Jakarta EE 10.
+  // - Exclusion de org.codehaus.groovy (groovy-all 3.x legacy du POM d'axelor-base) : AOP 8.2 embarque
+  //   déjà org.apache.groovy 4.x via axelor-core, les deux entrent en conflit de capacité Gradle.
+  implementation("com.axelor.apps:axelor-base:${axelorBaseVersion}") {
+    exclude group: 'org.codehaus.groovy'
+  }
+
+  // Driver JDBC PostgreSQL embarqué dans le WAR (AOP ne le fournit pas)
+  runtimeOnly 'org.postgresql:postgresql:42.7.14'
 }

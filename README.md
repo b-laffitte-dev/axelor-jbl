@@ -3,7 +3,8 @@
 Application AOP/AOF pour un **atelier de réparation de matériel de jardinage**
 (tondeuses, tronçonneuses, débroussailleuses, motoculteurs, taille-haies...).
 
-Cible : **Axelor Open Platform 8.2.x** (plugin Gradle `com.axelor.app` 8.2.+, Java 21).
+Cible : **Axelor Open Platform 8.2.6** (plugin Gradle `com.axelor.app` 8.2.6, Java 21, Tomcat 10.1 / Jakarta EE 10)
++ module métier publié **axelor-base 9.2.1** (AOS 9.x, construit sur AOP 8.2).
 
 ## Fonctionnalités V0
 
@@ -40,9 +41,10 @@ axelor-jbl/
 ├── src/main/resources/
 │   ├── axelor-config.properties                          # config appli + PostgreSQL
 │   ├── META-INF/persistence.xml
-│   ├── domains/Jbl.xml                                   # 7 entités (génération code AOP)
-│   ├── views/                                            # Selects.xml, grilles, formulaires, Menus.xml
-│   ├── actions/Actions.xml                               # listes + action-method → contrôleurs
+│   ├── domains/Jbl.xml                                   # 9 entités (génération code AOP)
+│   ├── views/                                            # Selects, grilles, formulaires, Menus, Actions
+│   │                                                     # (depuis AOP 8.x, actions et vues vivent dans
+│   │                                                     #  views/*.xml à racine <object-views>)
 │   └── i18n/messages_fr.properties
 └── src/main/java/com/axelor/apps/jbl/
     ├── module/JblModule.java                             # bindings Guice
@@ -77,10 +79,18 @@ Login par défaut AOP en mode dev : `admin` / `admin`.
 
 ## Note
 
-Ce squelette a été composé sans environnement JDK/Gradle disponible ici : il n'a pas été
-compilé dans cette session. Les versions sont épinglées sur la branche 8.2 (wildcard `8.2.+`) ;
-pour une autre version AOP, changer le wildcard dans `settings.gradle`/`gradle.properties` et les
-numéros de XSD (`*_8.2.xsd`) dans les XML.
+- Versions épinglées : plugin `com.axelor.app` **8.2.6** (settings.gradle) et `axelor-base` **9.2.1**
+  (gradle.properties `axelorBaseVersion`). Ne PAS remettre de wildcard `8.2.+` sur axelor-base :
+  les versions 8.2.x publiées d'axelor-base référencent `com.axelor.auth.AuditInterceptor`, absent du
+  core 8.2.6 (classe supprimée en 8.2), et tirent des addons javax incompatibles Jakarta.
+- `build.gradle` exclut `org.codehaus.groovy` d'axelor-base (conflit de capacité avec le
+  `org.apache.groovy:4.x` d'AOP 8.2) et embarque le driver PostgreSQL (`runtimeOnly`).
+- En AOP 8.2 : domaines en `<module/>` + `<entity>` frères, vues/actions en racine `<object-views>`,
+  `<text>` remplacé par `<string large="true"/>`, `scale` exige `precision` sur les décimaux,
+  exceptions dans `com.axelor.apps.base` (`AxelorMessageException` + `TraceBackRepository.CATEGORY_*`),
+  repositories générés dans `<package>.db.repo`, `ActionView` dans `com.axelor.meta.schema.actions`.
+- La persistence-unit doit s'appeler **`persistenceUnit`** et le driver JDBC doit être déclaré
+  (`db.default.driver`), sinon « No suitable driver » au démarrage.
 
 ## Docker
 

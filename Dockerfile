@@ -5,7 +5,7 @@
 # Étape 2 : runtime Tomcat 10.1 (Jakarta EE 10, requis par AOP 8.x), WAR en ROOT
 # ---------------------------------------------------------------------------
 
-FROM gradle:8.14.3-jdk21 AS build
+FROM gradle:8.14.5-jdk21 AS build
 WORKDIR /home/gradle/app
 # On copie d'abord les fichiers de build pour profiter du cache Docker
 # quand seul le code source change

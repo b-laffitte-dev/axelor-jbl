@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<views xmlns="http://axelor.com/xml/ns/views"
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/views https://axelor.com/xml/ns/views/views_8.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <menuitem name="menu-jbl-root" title="Atelier JBL" icon="fa-wrench" order="-100"/>
 
@@ -31,4 +31,4 @@
   <menuitem name="menu-jbl-products" parent="menu-jbl-root" title="Pièces détachées"
             action="action-jbl-product-parts" order="70"/>
 
-</views>
+</object-views>

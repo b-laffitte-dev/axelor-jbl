@@ -58,11 +58,11 @@ public class JblQuotationController {
     JblInvoice invoice = quotationService.createInvoice(quotation);
     response.setReload(true);
     response.setView(
-        com.axelor.rpc.ActionView.define("Facture " + invoice.getName())
+        com.axelor.meta.schema.actions.ActionView.define("Facture " + invoice.getName())
             .model("com.axelor.apps.jbl.db.JblInvoice")
             .add("form", "jbl-invoice-form")
             .param("forceEdit", "true")
             .context("_showRecord", String.valueOf(invoice.getId()))
-            .build());
+            .map());
   }
 }

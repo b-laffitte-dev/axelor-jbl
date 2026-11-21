@@ -23,6 +23,7 @@ services:
       # db.default.url -> AXELOR_CONFIG_DB_DEFAULT_URL, etc.
       AXELOR_CONFIG_APPLICATION_MODE: prod
       AXELOR_CONFIG_DB_DEFAULT_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      AXELOR_CONFIG_DB_DEFAULT_DRIVER: org.postgresql.Driver
       AXELOR_CONFIG_DB_DEFAULT_DDL: update
       AXELOR_CONFIG_DB_DEFAULT_URL: jdbc:postgresql://db:5432/axelor_jbl
       AXELOR_CONFIG_DB_DEFAULT_USER: axelor

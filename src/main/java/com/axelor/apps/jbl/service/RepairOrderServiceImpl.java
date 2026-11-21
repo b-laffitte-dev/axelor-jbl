@@ -1,9 +1,10 @@
 package com.axelor.apps.jbl.service;
 
+import com.axelor.apps.base.AxelorMessageException;
 import com.axelor.apps.jbl.db.JblQuotation;
 import com.axelor.apps.jbl.db.JblRepairLine;
 import com.axelor.apps.jbl.db.JblRepairOrder;
-import com.axelor.apps.jbl.db.JblRepairOrderRepository;
+import com.axelor.apps.jbl.db.repo.JblRepairOrderRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -62,7 +63,7 @@ public class RepairOrderServiceImpl implements RepairOrderService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void complete(JblRepairOrder repairOrder) {
+  public void complete(JblRepairOrder repairOrder) throws AxelorMessageException {
     stockService.consumeParts(repairOrder);
     repairOrder.setStatusSelect(STATUS_DONE);
     repairOrderRepository.save(repairOrder);

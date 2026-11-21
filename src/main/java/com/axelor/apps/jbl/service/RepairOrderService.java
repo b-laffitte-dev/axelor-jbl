@@ -1,5 +1,6 @@
 package com.axelor.apps.jbl.service;
 
+import com.axelor.apps.base.AxelorMessageException;
 import com.axelor.apps.jbl.db.JblRepairOrder;
 
 public interface RepairOrderService {
@@ -27,7 +28,7 @@ public interface RepairOrderService {
   void startRepair(JblRepairOrder repairOrder);
 
   /** Termine l'OR : consomme les pièces détachées en stock, puis passe à "Terminée". */
-  void complete(JblRepairOrder repairOrder);
+  void complete(JblRepairOrder repairOrder) throws AxelorMessageException;
 
   /** Marque l'OR comme facturé (appelé à la validation de la facture). */
   void markInvoiced(JblRepairOrder repairOrder);

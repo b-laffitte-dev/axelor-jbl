@@ -12,7 +12,7 @@ permissions:
   packages: write # push des images sur GHCR (ghcr.io/<owner>/<repo>)
 
 env:
-  GRADLE_VERSION: 8.14.3
+  GRADLE_VERSION: 8.14.5
   IMAGE_NAME: ghcr.io/${{ github.repository }}
 
 jobs:

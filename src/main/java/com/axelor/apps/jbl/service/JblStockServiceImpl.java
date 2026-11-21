@@ -6,9 +6,10 @@ import com.axelor.apps.jbl.db.JblRepairLine;
 import com.axelor.apps.jbl.db.JblRepairOrder;
 import com.axelor.apps.jbl.db.JblStock;
 import com.axelor.apps.jbl.db.JblStockMovement;
-import com.axelor.apps.jbl.db.JblStockMovementRepository;
-import com.axelor.apps.jbl.db.JblStockRepository;
-import com.axelor.exception.AxelorRuntimeException;
+import com.axelor.apps.jbl.db.repo.JblStockMovementRepository;
+import com.axelor.apps.jbl.db.repo.JblStockRepository;
+import com.axelor.apps.base.AxelorMessageException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -63,7 +64,7 @@ public class JblStockServiceImpl implements JblStockService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void applyMovement(JblStockMovement movement) {
+  public void applyMovement(JblStockMovement movement) throws AxelorMessageException {
     if (Boolean.TRUE.equals(movement.getApplied())) {
       return;
     }
@@ -81,7 +82,8 @@ public class JblStockServiceImpl implements JblStockService {
         break;
       case TYPE_OUT:
         if (current.compareTo(quantity) < 0) {
-          throw new AxelorRuntimeException(
+          throw new AxelorMessageException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
               String.format(
                   "Stock insuffisant pour la pièce '%s' : disponible %s, demandé %s.",
                   product != null ? product.getName() : "?", current, quantity));
@@ -93,7 +95,9 @@ public class JblStockServiceImpl implements JblStockService {
         delta = quantity.subtract(current);
         break;
       default:
-        throw new AxelorRuntimeException("Type de mouvement inconnu : " + type);
+        throw new AxelorMessageException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            "Type de mouvement inconnu : " + type);
     }
 
     stock.setQuantity(current.add(delta));
@@ -106,7 +110,7 @@ public class JblStockServiceImpl implements JblStockService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void consumeParts(JblRepairOrder repairOrder) {
+  public void consumeParts(JblRepairOrder repairOrder) throws AxelorMessageException {
     if (repairOrder.getRepairLineList() == null) {
       return;
     }

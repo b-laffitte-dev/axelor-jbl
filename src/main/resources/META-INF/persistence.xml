@@ -3,5 +3,5 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3.0.xsd"
              version="3.0">
-  <persistence-unit name="axelor-jbl" transaction-type="RESOURCE_LOCAL"/>
+  <persistence-unit name="persistenceUnit" transaction-type="RESOURCE_LOCAL"/>
 </persistence>

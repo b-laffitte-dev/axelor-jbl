@@ -2,7 +2,7 @@ package com.axelor.apps.jbl.service;
 
 import com.axelor.apps.jbl.db.JblInvoice;
 import com.axelor.apps.jbl.db.JblInvoiceLine;
-import com.axelor.apps.jbl.db.JblInvoiceRepository;
+import com.axelor.apps.jbl.db.repo.JblInvoiceRepository;
 import com.axelor.apps.jbl.db.JblRepairOrder;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

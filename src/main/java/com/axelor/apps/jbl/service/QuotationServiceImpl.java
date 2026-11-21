@@ -2,10 +2,10 @@ package com.axelor.apps.jbl.service;
 
 import com.axelor.apps.jbl.db.JblInvoice;
 import com.axelor.apps.jbl.db.JblInvoiceLine;
-import com.axelor.apps.jbl.db.JblInvoiceRepository;
+import com.axelor.apps.jbl.db.repo.JblInvoiceRepository;
 import com.axelor.apps.jbl.db.JblQuotation;
 import com.axelor.apps.jbl.db.JblQuotationLine;
-import com.axelor.apps.jbl.db.JblQuotationRepository;
+import com.axelor.apps.jbl.db.repo.JblQuotationRepository;
 import com.axelor.apps.jbl.db.JblRepairLine;
 import com.axelor.apps.jbl.db.JblRepairOrder;
 import com.google.inject.Inject;

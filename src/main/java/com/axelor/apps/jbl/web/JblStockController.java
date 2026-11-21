@@ -1,5 +1,6 @@
 package com.axelor.apps.jbl.web;
 
+import com.axelor.apps.base.AxelorMessageException;
 import com.axelor.apps.jbl.db.JblStockMovement;
 import com.axelor.apps.jbl.service.JblNumberService;
 import com.axelor.apps.jbl.service.JblStockService;
@@ -22,7 +23,7 @@ public class JblStockController {
   }
 
   /** Applique le mouvement saisi au stock de la pièce. */
-  public void apply(ActionRequest request, ActionResponse response) {
+  public void apply(ActionRequest request, ActionResponse response) throws AxelorMessageException {
     JblStockMovement movement = request.getContext().asType(JblStockMovement.class);
     stockService.applyMovement(movement);
     response.setReload(true);

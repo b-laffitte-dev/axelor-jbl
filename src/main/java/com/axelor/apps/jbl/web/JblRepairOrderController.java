@@ -1,5 +1,6 @@
 package com.axelor.apps.jbl.web;
 
+import com.axelor.apps.base.AxelorMessageException;
 import com.axelor.apps.jbl.db.JblRepairOrder;
 import com.axelor.apps.jbl.service.JblNumberService;
 import com.axelor.apps.jbl.service.RepairOrderService;
@@ -46,7 +47,7 @@ public class JblRepairOrderController {
     response.setReload(true);
   }
 
-  public void complete(ActionRequest request, ActionResponse response) {
+  public void complete(ActionRequest request, ActionResponse response) throws AxelorMessageException {
     JblRepairOrder repairOrder = request.getContext().asType(JblRepairOrder.class);
     repairOrderService.complete(repairOrder);
     response.setReload(true);
