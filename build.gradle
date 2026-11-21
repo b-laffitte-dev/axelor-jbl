@@ -40,6 +40,9 @@ dependencies {
   //   déjà org.apache.groovy 4.x via axelor-core, les deux entrent en conflit de capacité Gradle.
   implementation("com.axelor.apps:axelor-base:${axelorBaseVersion}") {
     exclude group: 'org.codehaus.groovy'
+    // axelor-studio et axelor-message restent dans le classpath : axelor-base 9.x
+    // référence leurs classes (ScriptAppService, MessageServiceImpl) au démarrage.
+    // Ils sont rendus invisibles côté UI (menus nettoyés en base, voir README).
   }
 
   // Driver JDBC PostgreSQL embarqué dans le WAR (AOP ne le fournit pas)

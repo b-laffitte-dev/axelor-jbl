@@ -1,13 +1,11 @@
 package com.axelor.apps.jbl.service;
 
-import com.axelor.apps.jbl.db.JblInvoice;
-import com.axelor.apps.jbl.db.JblInvoiceLine;
-import com.axelor.apps.jbl.db.repo.JblInvoiceRepository;
 import com.axelor.apps.jbl.db.JblQuotation;
 import com.axelor.apps.jbl.db.JblQuotationLine;
 import com.axelor.apps.jbl.db.repo.JblQuotationRepository;
 import com.axelor.apps.jbl.db.JblRepairLine;
 import com.axelor.apps.jbl.db.JblRepairOrder;
+import com.axelor.apps.jbl.db.repo.JblRepairOrderRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -21,40 +19,46 @@ import java.util.List;
 public class QuotationServiceImpl implements QuotationService {
 
   @Inject private JblQuotationRepository quotationRepository;
-  @Inject private JblInvoiceRepository invoiceRepository;
+  @Inject private JblRepairOrderRepository repairOrderRepository;
   @Inject private JblNumberService numberService;
-  @Inject private JblInvoiceService invoiceService;
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public JblQuotation createFromRepairOrder(JblRepairOrder repairOrder) {
-    JblQuotation quotation = new JblQuotation();
-    quotation.setName(numberService.nextNumber("DEV", "JblQuotation"));
-    quotation.setPartner(repairOrder.getPartner());
-    quotation.setCompany(repairOrder.getCompany());
-    quotation.setRepairOrder(repairOrder);
-    quotation.setQuotationDate(LocalDate.now());
-    quotation.setValidUntil(LocalDate.now().plusDays(30));
-    quotation.setStatusSelect(STATUS_DRAFT);
-    quotation.setVatRate(
-        repairOrder.getVatRate() != null ? repairOrder.getVatRate() : new BigDecimal("20"));
+  public JblRepairOrder createRepairOrder(JblQuotation quotation) {
+    JblRepairOrder repairOrder = new JblRepairOrder();
+    repairOrder.setName(numberService.nextNumber("OR", "JblRepairOrder"));
+    repairOrder.setPartner(quotation.getPartner());
+    repairOrder.setEquipment(quotation.getEquipment());
+    repairOrder.setCompany(quotation.getCompany());
+    repairOrder.setQuotation(quotation);
+    repairOrder.setReceptionDate(LocalDate.now());
+    repairOrder.setStatusSelect(RepairOrderService.STATUS_DRAFT);
+    repairOrder.setVatRate(
+        quotation.getVatRate() != null ? quotation.getVatRate() : new BigDecimal("20"));
 
-    List<JblQuotationLine> lines = new ArrayList<>();
-    if (repairOrder.getRepairLineList() != null) {
-      for (JblRepairLine line : repairOrder.getRepairLineList()) {
-        JblQuotationLine ql = new JblQuotationLine();
-        ql.setQuotation(quotation);
-        ql.setProduct(line.getProduct());
-        ql.setDescription(line.getDescription());
-        ql.setQuantity(line.getQuantity());
-        ql.setUnitPriceHT(line.getUnitPriceHT());
-        lines.add(ql);
+    List<JblRepairLine> lines = new ArrayList<>();
+    if (quotation.getLineList() != null) {
+      for (JblQuotationLine line : quotation.getLineList()) {
+        JblRepairLine rl = new JblRepairLine();
+        rl.setRepairOrder(repairOrder);
+        rl.setProduct(line.getProduct());
+        rl.setDescription(line.getDescription());
+        rl.setQuantity(line.getQuantity());
+        rl.setUnitPriceHT(line.getUnitPriceHT());
+        rl.setLineTypeSelect(
+            line.getProduct() != null
+                ? RepairOrderService.LINE_PART
+                : RepairOrderService.LINE_FLAT);
+        lines.add(rl);
       }
     }
-    quotation.setLineList(lines);
+    repairOrder.setRepairLineList(lines);
 
-    compute(quotation);
-    return quotationRepository.save(quotation);
+    repairOrder = repairOrderRepository.save(repairOrder);
+
+    quotation.setRepairOrder(repairOrder);
+    quotationRepository.save(quotation);
+    return repairOrder;
   }
 
   @Override
@@ -96,47 +100,5 @@ public class QuotationServiceImpl implements QuotationService {
   public void refuse(JblQuotation quotation) {
     quotation.setStatusSelect(STATUS_REFUSED);
     quotationRepository.save(quotation);
-  }
-
-  @Override
-  @Transactional(rollbackOn = Exception.class)
-  public JblInvoice createInvoice(JblQuotation quotation) {
-    JblInvoice invoice = new JblInvoice();
-    invoice.setName(numberService.nextNumber("FACT", "JblInvoice"));
-    invoice.setPartner(quotation.getPartner());
-    invoice.setCompany(quotation.getCompany());
-    invoice.setQuotation(quotation);
-    invoice.setRepairOrder(quotation.getRepairOrder());
-    invoice.setInvoiceDate(LocalDate.now());
-    invoice.setDueDate(LocalDate.now().plusDays(30));
-    invoice.setStatusSelect(JblInvoiceService.STATUS_DRAFT);
-    invoice.setVatRate(
-        quotation.getVatRate() != null ? quotation.getVatRate() : new BigDecimal("20"));
-
-    List<JblInvoiceLine> lines = new ArrayList<>();
-    if (quotation.getLineList() != null) {
-      for (JblQuotationLine line : quotation.getLineList()) {
-        JblInvoiceLine il = new JblInvoiceLine();
-        il.setInvoice(invoice);
-        il.setProduct(line.getProduct());
-        il.setDescription(line.getDescription());
-        il.setQuantity(line.getQuantity());
-        il.setUnitPriceHT(line.getUnitPriceHT());
-        lines.add(il);
-      }
-    }
-    invoice.setLineList(lines);
-
-    invoiceService.compute(invoice);
-    invoice = invoiceRepository.save(invoice);
-
-    quotation.setInvoice(invoice);
-    quotationRepository.save(quotation);
-
-    if (quotation.getRepairOrder() != null) {
-      JblRepairOrder repairOrder = quotation.getRepairOrder();
-      repairOrder.setInvoice(invoice);
-    }
-    return invoice;
   }
 }

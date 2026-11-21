@@ -29,6 +29,7 @@
     <![CDATA[Fiche d'ordre de réparation d'un matériel de jardinage]]>
     <string name="name" title="N° d'OR" unique="true"/>
     <integer name="statusSelect" title="Statut" selection="jbl.repair.order.status.select" default="0"/>
+    <integer name="sequence" title="Séquence" default="0" hidden="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Client" required="true"/>
     <many-to-one name="equipment" ref="com.axelor.apps.jbl.db.JblEquipment" title="Matériel enregistré"/>
     <string name="materialDescription" title="Matériel (si non enregistré)" large="true"/>
@@ -44,7 +45,7 @@
     <decimal name="vatRate" title="TVA (%)" precision="19" scale="2" default="20"/>
     <decimal name="totalVAT" title="Montant TVA" precision="19" scale="2" readonly="true"/>
     <decimal name="totalTTC" title="Total TTC" precision="19" scale="2" readonly="true"/>
-    <many-to-one name="quotation" ref="com.axelor.apps.jbl.db.JblQuotation" title="Devis généré"/>
+    <many-to-one name="quotation" ref="com.axelor.apps.jbl.db.JblQuotation" title="Devis d'origine"/>
     <many-to-one name="invoice" ref="com.axelor.apps.jbl.db.JblInvoice" title="Facture générée"/>
   </entity>
 
@@ -70,7 +71,8 @@
     <string name="name" title="N° de devis" unique="true"/>
     <integer name="statusSelect" title="Statut" selection="jbl.quotation.status.select" default="0"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Client" required="true"/>
-    <many-to-one name="repairOrder" ref="com.axelor.apps.jbl.db.JblRepairOrder" title="Ordre de réparation"/>
+    <many-to-one name="equipment" ref="com.axelor.apps.jbl.db.JblEquipment" title="Matériel concerné"/>
+    <many-to-one name="repairOrder" ref="com.axelor.apps.jbl.db.JblRepairOrder" title="OR généré"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Société"/>
     <date name="quotationDate" title="Date du devis" required="true"/>
     <date name="validUntil" title="Valable jusqu'au"/>

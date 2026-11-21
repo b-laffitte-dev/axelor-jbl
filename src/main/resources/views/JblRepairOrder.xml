@@ -11,8 +11,29 @@
     <field name="receptionDate"/>
     <field name="plannedDate"/>
     <field name="technician"/>
+    <field name="quotation"/>
     <field name="totalTTC"/>
   </grid>
+
+  <kanban name="jbl-repair-order-kanban" title="Pipeline des réparations" model="com.axelor.apps.jbl.db.JblRepairOrder"
+          columnBy="statusSelect" sequenceBy="sequence">
+    <field name="name"/>
+    <field name="partner"/>
+    <field name="equipment"/>
+    <field name="plannedDate"/>
+    <field name="technician"/>
+    <field name="totalTTC"/>
+    <template><![CDATA[
+      <div class="kanban-card">
+        <strong>{{name}}</strong><br/>
+        {{partner.name}}<br/>
+        {{#equipment}}{{equipment.name}}<br/>{{/equipment}}
+        {{#technician}}Tech : {{technician.name}}<br/>{{/technician}}
+        Prévu : {{plannedDate}}<br/>
+        <b>{{totalTTC}} € TTC</b>
+      </div>
+    ]]></template>
+  </kanban>
 
   <form name="jbl-repair-order-form" title="Ordre de réparation" model="com.axelor.apps.jbl.db.JblRepairOrder" width="large"
         onNew="action-jbl-repair-order-onnew" onSave="action-jbl-repair-order-method-compute">
@@ -48,12 +69,12 @@
     <panel sidebar="true">
       <button name="btnCompute" title="Recalculer les totaux" colSpan="12"
               onClick="save,action-jbl-repair-order-method-compute"/>
-      <button name="btnConfirm" title="Confirmer → générer le devis" colSpan="12"
-              onClick="save,action-jbl-repair-order-method-confirm" showIf="statusSelect == 0"/>
       <button name="btnStart" title="Démarrer la réparation" colSpan="12"
-              onClick="save,action-jbl-repair-order-method-start" showIf="statusSelect == 1"/>
+              onClick="save,action-jbl-repair-order-method-start" showIf="statusSelect == 0"/>
       <button name="btnComplete" title="Terminer (consomme les pièces en stock)" colSpan="12"
-              onClick="save,action-jbl-repair-order-method-complete" showIf="statusSelect == 2"/>
+              onClick="save,action-jbl-repair-order-method-complete" showIf="statusSelect == 1"/>
+      <button name="btnToInvoice" title="Générer la facture" colSpan="12"
+              onClick="save,action-jbl-repair-order-method-to-invoice" showIf="statusSelect == 2"/>
       <button name="btnCancel" title="Annuler l'OR" colSpan="12"
               onClick="save,action-jbl-repair-order-method-cancel" showIf="statusSelect &lt; 3"/>
     </panel>

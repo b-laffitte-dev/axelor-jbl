@@ -7,6 +7,7 @@
     <field name="name"/>
     <field name="statusSelect" widget="NavSelect"/>
     <field name="partner"/>
+    <field name="equipment"/>
     <field name="quotationDate"/>
     <field name="validUntil"/>
     <field name="repairOrder"/>
@@ -22,7 +23,8 @@
       <field name="validUntil" colSpan="3"/>
       <field name="partner" colSpan="6" domain="self.isCustomer = true" canNew="true" canEdit="true"/>
       <field name="company" colSpan="6" readonly="true"/>
-      <field name="repairOrder" colSpan="6"/>
+      <field name="equipment" colSpan="6" canNew="true" canEdit="true"/>
+      <field name="repairOrder" colSpan="6" readonly="true"/>
     </panel>
     <panel title="Lignes du devis">
       <panel-related name="lineListPanel" field="lineList" colSpan="12"
@@ -35,7 +37,7 @@
       <field name="totalVAT" colSpan="3" readonly="true"/>
       <field name="totalTTC" colSpan="3" readonly="true"/>
     </panel>
-    <panel title="Facture liée">
+    <panel title="Documents liés">
       <field name="invoice" colSpan="6" readonly="true"/>
     </panel>
     <panel sidebar="true">
@@ -47,8 +49,8 @@
               onClick="save,action-jbl-quotation-method-accept" showIf="statusSelect == 1"/>
       <button name="btnRefuse" title="Refusé par le client" colSpan="12"
               onClick="save,action-jbl-quotation-method-refuse" showIf="statusSelect == 1"/>
-      <button name="btnToInvoice" title="Générer la facture" colSpan="12"
-              onClick="save,action-jbl-quotation-method-to-invoice" showIf="statusSelect == 2"/>
+      <button name="btnToRepairOrder" title="Générer l'ordre de réparation" colSpan="12"
+              onClick="save,action-jbl-quotation-method-to-repair-order" showIf="statusSelect == 2"/>
     </panel>
   </form>
 

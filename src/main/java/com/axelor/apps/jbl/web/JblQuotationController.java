@@ -1,7 +1,7 @@
 package com.axelor.apps.jbl.web;
 
-import com.axelor.apps.jbl.db.JblInvoice;
 import com.axelor.apps.jbl.db.JblQuotation;
+import com.axelor.apps.jbl.db.JblRepairOrder;
 import com.axelor.apps.jbl.service.JblNumberService;
 import com.axelor.apps.jbl.service.QuotationService;
 import com.axelor.auth.db.User;
@@ -53,16 +53,17 @@ public class JblQuotationController {
     response.setReload(true);
   }
 
-  public void createInvoice(ActionRequest request, ActionResponse response) {
+  /** Génère l'ordre de réparation depuis le devis accepté et ouvre l'OR créé. */
+  public void createRepairOrder(ActionRequest request, ActionResponse response) {
     JblQuotation quotation = request.getContext().asType(JblQuotation.class);
-    JblInvoice invoice = quotationService.createInvoice(quotation);
+    JblRepairOrder repairOrder = quotationService.createRepairOrder(quotation);
     response.setReload(true);
     response.setView(
-        com.axelor.meta.schema.actions.ActionView.define("Facture " + invoice.getName())
-            .model("com.axelor.apps.jbl.db.JblInvoice")
-            .add("form", "jbl-invoice-form")
+        com.axelor.meta.schema.actions.ActionView.define("Ordre de réparation " + repairOrder.getName())
+            .model("com.axelor.apps.jbl.db.JblRepairOrder")
+            .add("form", "jbl-repair-order-form")
             .param("forceEdit", "true")
-            .context("_showRecord", String.valueOf(invoice.getId()))
+            .context("_showRecord", String.valueOf(repairOrder.getId()))
             .map());
   }
 }

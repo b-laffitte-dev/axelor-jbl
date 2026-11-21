@@ -1,7 +1,9 @@
 package com.axelor.apps.jbl.service;
 
 import com.axelor.apps.base.AxelorMessageException;
-import com.axelor.apps.jbl.db.JblQuotation;
+import com.axelor.apps.jbl.db.JblInvoice;
+import com.axelor.apps.jbl.db.JblInvoiceLine;
+import com.axelor.apps.jbl.db.repo.JblInvoiceRepository;
 import com.axelor.apps.jbl.db.JblRepairLine;
 import com.axelor.apps.jbl.db.JblRepairOrder;
 import com.axelor.apps.jbl.db.repo.JblRepairOrderRepository;
@@ -10,12 +12,17 @@ import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Singleton
 public class RepairOrderServiceImpl implements RepairOrderService {
 
   @Inject private JblRepairOrderRepository repairOrderRepository;
-  @Inject private QuotationService quotationService;
+  @Inject private JblInvoiceRepository invoiceRepository;
+  @Inject private JblNumberService numberService;
+  @Inject private JblInvoiceService invoiceService;
   @Inject private JblStockService stockService;
 
   @Override
@@ -46,16 +53,6 @@ public class RepairOrderServiceImpl implements RepairOrderService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void confirm(JblRepairOrder repairOrder) {
-    compute(repairOrder);
-    JblQuotation quotation = quotationService.createFromRepairOrder(repairOrder);
-    repairOrder.setQuotation(quotation);
-    repairOrder.setStatusSelect(STATUS_QUOTATION_SENT);
-    repairOrderRepository.save(repairOrder);
-  }
-
-  @Override
-  @Transactional(rollbackOn = Exception.class)
   public void startRepair(JblRepairOrder repairOrder) {
     repairOrder.setStatusSelect(STATUS_IN_PROGRESS);
     repairOrderRepository.save(repairOrder);
@@ -67,6 +64,43 @@ public class RepairOrderServiceImpl implements RepairOrderService {
     stockService.consumeParts(repairOrder);
     repairOrder.setStatusSelect(STATUS_DONE);
     repairOrderRepository.save(repairOrder);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public JblInvoice createInvoice(JblRepairOrder repairOrder) {
+    JblInvoice invoice = new JblInvoice();
+    invoice.setName(numberService.nextNumber("FACT", "JblInvoice"));
+    invoice.setPartner(repairOrder.getPartner());
+    invoice.setCompany(repairOrder.getCompany());
+    invoice.setRepairOrder(repairOrder);
+    invoice.setQuotation(repairOrder.getQuotation());
+    invoice.setInvoiceDate(LocalDate.now());
+    invoice.setDueDate(LocalDate.now().plusDays(30));
+    invoice.setStatusSelect(JblInvoiceService.STATUS_DRAFT);
+    invoice.setVatRate(
+        repairOrder.getVatRate() != null ? repairOrder.getVatRate() : new BigDecimal("20"));
+
+    List<JblInvoiceLine> lines = new ArrayList<>();
+    if (repairOrder.getRepairLineList() != null) {
+      for (JblRepairLine line : repairOrder.getRepairLineList()) {
+        JblInvoiceLine il = new JblInvoiceLine();
+        il.setInvoice(invoice);
+        il.setProduct(line.getProduct());
+        il.setDescription(line.getDescription());
+        il.setQuantity(line.getQuantity());
+        il.setUnitPriceHT(line.getUnitPriceHT());
+        lines.add(il);
+      }
+    }
+    invoice.setLineList(lines);
+
+    invoiceService.compute(invoice);
+    invoice = invoiceRepository.save(invoice);
+
+    repairOrder.setInvoice(invoice);
+    repairOrderRepository.save(repairOrder);
+    return invoice;
   }
 
   @Override

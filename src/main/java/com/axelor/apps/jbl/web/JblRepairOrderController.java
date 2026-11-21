@@ -1,6 +1,7 @@
 package com.axelor.apps.jbl.web;
 
 import com.axelor.apps.base.AxelorMessageException;
+import com.axelor.apps.jbl.db.JblInvoice;
 import com.axelor.apps.jbl.db.JblRepairOrder;
 import com.axelor.apps.jbl.service.JblNumberService;
 import com.axelor.apps.jbl.service.RepairOrderService;
@@ -35,12 +36,6 @@ public class JblRepairOrderController {
     response.setReload(true);
   }
 
-  public void confirm(ActionRequest request, ActionResponse response) {
-    JblRepairOrder repairOrder = request.getContext().asType(JblRepairOrder.class);
-    repairOrderService.confirm(repairOrder);
-    response.setReload(true);
-  }
-
   public void startRepair(ActionRequest request, ActionResponse response) {
     JblRepairOrder repairOrder = request.getContext().asType(JblRepairOrder.class);
     repairOrderService.startRepair(repairOrder);
@@ -51,6 +46,20 @@ public class JblRepairOrderController {
     JblRepairOrder repairOrder = request.getContext().asType(JblRepairOrder.class);
     repairOrderService.complete(repairOrder);
     response.setReload(true);
+  }
+
+  /** Génère la facture depuis l'OR terminé et ouvre la facture créée. */
+  public void createInvoice(ActionRequest request, ActionResponse response) {
+    JblRepairOrder repairOrder = request.getContext().asType(JblRepairOrder.class);
+    JblInvoice invoice = repairOrderService.createInvoice(repairOrder);
+    response.setReload(true);
+    response.setView(
+        com.axelor.meta.schema.actions.ActionView.define("Facture " + invoice.getName())
+            .model("com.axelor.apps.jbl.db.JblInvoice")
+            .add("form", "jbl-invoice-form")
+            .param("forceEdit", "true")
+            .context("_showRecord", String.valueOf(invoice.getId()))
+            .map());
   }
 
   public void cancel(ActionRequest request, ActionResponse response) {

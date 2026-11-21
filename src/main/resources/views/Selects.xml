@@ -18,11 +18,10 @@
 
   <selection name="jbl.repair.order.status.select">
     <option value="0">Brouillon</option>
-    <option value="1">Devis envoyé</option>
-    <option value="2">Réparation en cours</option>
-    <option value="3">Terminée</option>
-    <option value="4">Facturée</option>
-    <option value="5">Annulée</option>
+    <option value="1">Réparation en cours</option>
+    <option value="2">Terminée</option>
+    <option value="3">Facturée</option>
+    <option value="4">Annulée</option>
   </selection>
 
   <selection name="jbl.repair.line.type.select">

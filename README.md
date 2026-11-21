@@ -21,14 +21,21 @@ Cible : **Axelor Open Platform 8.2.6** (plugin Gradle `com.axelor.app` 8.2.6, Ja
 
 ### Workflow d'un ordre de réparation
 
-`Brouillon → Devis envoyé → Réparation en cours → Terminée → Facturée` (ou `Annulée`)
+Le flux est **Devis → Ordre de réparation → Facture** :
 
-1. **Confirmer → générer le devis** : copie les lignes de l'OR dans un `JblQuotation`.
-2. **Démarrer la réparation** : statut « en cours ».
-3. **Terminer** : consomme automatiquement les pièces détachées en stock
+`Devis brouillon → Envoyé → Accepté` puis `OR : Brouillon → Réparation en cours → Terminée → Facturée` (ou `Annulée`)
+
+1. **Créer le devis** (client + matériel concerné + lignes pièce/main d'œuvre/forfait).
+2. **Envoyer puis faire accepter le devis** ; sur le devis accepté, le bouton
+   « Générer l'ordre de réparation » crée l'OR (lignes copiées du devis, devis d'origine lié).
+3. **Démarrer la réparation** : statut « en cours ».
+4. **Terminer** : consomme automatiquement les pièces détachées en stock
    (mouvements de sortie `MOUV-...`, blocage si stock insuffisant).
-4. Sur le devis accepté, **Générer la facture** ; à la validation de la facture,
-   l'OR passe à « Facturée ».
+5. Sur l'OR terminé, **Générer la facture** (lignes copiées de l'OR) ; à la validation
+   de la facture, l'OR passe à « Facturée ».
+
+Une **vue kanban** (`Pipeline des réparations`) est disponible sur la liste des OR
+(colonnes = statuts, drag & drop pour changer de statut).
 
 Numérotation : `OR-2026-00001`, `DEV-2026-00001`, `FACT-2026-00001`, `MOUV-2026-00001`
 (générée par `JblNumberService`, à remplacer par une `Sequence` AOP en V1).
@@ -75,6 +82,26 @@ code Java change (installer `fswatch` — `brew install fswatch` — pour une
 détection instantanée, sinon repli sur un polling de 2 s).
 
 Login par défaut AOP en mode dev : `admin` / `admin`.
+
+### Nettoyage de la base de dev (données/menus hors Atelier JBL)
+
+Par défaut AOP importe des données de démo (utilisateur `demo`) et affiche les menus
+de tous les modules embarqués (Studio, Messagerie, Teamwork, Calendrier, Documents...).
+Les modules `axelor-studio` / `axelor-message` restent dans le classpath (axelor-base 9.x
+référence leurs classes au démarrage), mais on masque leurs menus.
+
+Pour repartir d'une base vierge et ne garder que l'essentiel (admin + Administration + JBL) :
+
+```sh
+./scripts/reset-dev-db.sh        # recrée la base vide (docker compose down -v)
+./dev.sh                         # démarre l'app : schéma + modules recréés
+# puis applique le nettoyage (menus cachés, user demo supprimé) :
+docker cp scripts/clean-demo-data.sql axelor-jbl-db-1:/tmp/clean.sql
+docker exec axelor-jbl-db-1 psql -U axelor -d axelor_jbl -f /tmp/clean.sql
+```
+
+Menus top-level visibles après nettoyage : **Administration** (axelor-base/core) et
+**Atelier JBL**. Seul l'utilisateur `admin` est conservé.
 
 ## Pistes pour la V1
 

@@ -8,6 +8,7 @@
   <action-view name="action-jbl-repair-order-all" title="Ordres de réparation" model="com.axelor.apps.jbl.db.JblRepairOrder">
     <view type="grid" name="jbl-repair-order-grid"/>
     <view type="form" name="jbl-repair-order-form"/>
+    <view type="kanban" name="jbl-repair-order-kanban"/>
   </action-view>
 
   <action-view name="action-jbl-quotation-all" title="Devis" model="com.axelor.apps.jbl.db.JblQuotation">
@@ -63,14 +64,14 @@
   <action-method name="action-jbl-repair-order-method-compute">
     <call class="com.axelor.apps.jbl.web.JblRepairOrderController" method="compute"/>
   </action-method>
-  <action-method name="action-jbl-repair-order-method-confirm">
-    <call class="com.axelor.apps.jbl.web.JblRepairOrderController" method="confirm"/>
-  </action-method>
   <action-method name="action-jbl-repair-order-method-start">
     <call class="com.axelor.apps.jbl.web.JblRepairOrderController" method="startRepair"/>
   </action-method>
   <action-method name="action-jbl-repair-order-method-complete">
     <call class="com.axelor.apps.jbl.web.JblRepairOrderController" method="complete"/>
+  </action-method>
+  <action-method name="action-jbl-repair-order-method-to-invoice">
+    <call class="com.axelor.apps.jbl.web.JblRepairOrderController" method="createInvoice"/>
   </action-method>
   <action-method name="action-jbl-repair-order-method-cancel">
     <call class="com.axelor.apps.jbl.web.JblRepairOrderController" method="cancel"/>
@@ -91,8 +92,8 @@
   <action-method name="action-jbl-quotation-method-refuse">
     <call class="com.axelor.apps.jbl.web.JblQuotationController" method="refuse"/>
   </action-method>
-  <action-method name="action-jbl-quotation-method-to-invoice">
-    <call class="com.axelor.apps.jbl.web.JblQuotationController" method="createInvoice"/>
+  <action-method name="action-jbl-quotation-method-to-repair-order">
+    <call class="com.axelor.apps.jbl.web.JblQuotationController" method="createRepairOrder"/>
   </action-method>
 
   <action-method name="action-jbl-invoice-onnew">

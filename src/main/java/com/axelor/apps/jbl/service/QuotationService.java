@@ -1,6 +1,5 @@
 package com.axelor.apps.jbl.service;
 
-import com.axelor.apps.jbl.db.JblInvoice;
 import com.axelor.apps.jbl.db.JblQuotation;
 import com.axelor.apps.jbl.db.JblRepairOrder;
 
@@ -12,8 +11,8 @@ public interface QuotationService {
   int STATUS_ACCEPTED = 2;
   int STATUS_REFUSED = 3;
 
-  /** Crée un devis à partir des lignes d'un ordre de réparation. */
-  JblQuotation createFromRepairOrder(JblRepairOrder repairOrder);
+  /** Crée un ordre de réparation à partir d'un devis accepté (lignes copiées). */
+  JblRepairOrder createRepairOrder(JblQuotation quotation);
 
   /** Recalcule les totaux du devis. */
   void compute(JblQuotation quotation);
@@ -23,7 +22,4 @@ public interface QuotationService {
   void accept(JblQuotation quotation);
 
   void refuse(JblQuotation quotation);
-
-  /** Génère la facture à partir d'un devis accepté. */
-  JblInvoice createInvoice(JblQuotation quotation);
 }
