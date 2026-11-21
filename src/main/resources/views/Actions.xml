@@ -25,10 +25,10 @@
     <domain>self.operationTypeSelect = 3</domain>
   </action-view>
 
-  <!-- Matériels clients = Equipment (axelor-intervention) -->
-  <action-view name="action-jbl-equipment-all" title="menu.jbl.equipments" model="com.axelor.apps.intervention.db.Equipment">
-    <view type="grid" name="equipment-grid"/>
-    <view type="form" name="equipment-form"/>
+  <!-- Matériels clients = JblEquipment (custom, remplace intervention.Equipment) -->
+  <action-view name="action-jbl-equipment-all" title="menu.jbl.equipments" model="com.axelor.apps.jbl.db.JblEquipment">
+    <view type="grid" name="jbl-equipment-grid"/>
+    <view type="form" name="jbl-equipment-form"/>
   </action-view>
 
   <!-- Stock = StockMove / StockLocationLine (axelor-stock) -->

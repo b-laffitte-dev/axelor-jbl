@@ -7,11 +7,24 @@
   <module name="Jbl" package="com.axelor.apps.jbl.db"/>
 
   <!-- ================================================================== -->
-  <!-- V1 : le module ne garde que le cœur métier atelier.                 -->
+  <!-- Module ne contenant que le cœur métier atelier (strict nécessaire): -->
   <!-- Devis = sale.SaleOrder, Facture = account.Invoice,                 -->
-  <!-- Stock = stock.StockMove/StockLocation, Matériel = intervention.Equipment, -->
-  <!-- numérotation = base.Sequence (jbl.repair.order.seq, voir data-init) -->
+  <!-- Stock = stock.StockMove/StockLocation, Matériel = JblEquipment (custom), -->
+  <!-- numérotation = MetaSequence (voir data-init)                        -->
   <!-- ================================================================== -->
+
+  <!-- Matériel client (remplace intervention.Equipment pour alléger le classpath) -->
+  <entity name="JblEquipment" cacheable="true">
+    <![CDATA[Matériel de jardinage appartenant à un client, réparé à l'atelier]]>
+    <string name="code" title="Title.JblEquipment.Code" unique="true" readonly="true" copy="false"
+            sequence="jbl.equipment.seq"/>
+    <string name="name" title="Title.JblEquipment.Name" required="true"/>
+    <string name="brand" title="Title.JblEquipment.Brand"/>
+    <string name="model" title="Title.JblEquipment.Model"/>
+    <string name="serialNumber" title="Title.JblEquipment.SerialNumber"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Title.JblEquipment.Partner"/>
+    <string name="notes" title="Title.JblEquipment.Notes" large="true"/>
+  </entity>
 
   <!-- Fiche d'ordre de réparation (OR) -->
   <entity name="JblRepairOrder" cacheable="true">
@@ -21,7 +34,7 @@
     <integer name="statusSelect" title="Title.JblRepairOrder.StatusSelect" selection="jbl.repair.order.status.select" default="0"/>
     <integer name="sequence" title="Title.JblRepairOrder.Sequence" default="0" hidden="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Title.JblRepairOrder.Partner" required="true"/>
-    <many-to-one name="equipment" ref="com.axelor.apps.intervention.db.Equipment" title="Title.JblRepairOrder.Equipment"/>
+    <many-to-one name="equipment" ref="com.axelor.apps.jbl.db.JblEquipment" title="Title.JblRepairOrder.Equipment"/>
     <string name="materialDescription" title="Title.JblRepairOrder.MaterialDescription" large="true"/>
     <date name="receptionDate" title="Title.JblRepairOrder.ReceptionDate" required="true"/>
     <date name="plannedDate" title="Title.JblRepairOrder.PlannedDate"/>

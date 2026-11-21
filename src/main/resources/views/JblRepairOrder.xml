@@ -46,7 +46,7 @@
       <field name="plannedDate" colSpan="3"/>
       <field name="partner" colSpan="6" domain="self.isCustomer = true" canNew="true" canEdit="true"/>
       <field name="company" colSpan="6" readonly="true"/>
-      <field name="equipment" colSpan="6" canNew="true" canEdit="true"/>
+      <field name="equipment" colSpan="6" canNew="true" canEdit="true" form-view="jbl-equipment-form" grid-view="jbl-equipment-grid"/>
       <field name="materialDescription" colSpan="6"/>
       <field name="technician" colSpan="6"/>
       <field name="diagnosis" colSpan="12" widget="html"/>

@@ -29,4 +29,21 @@
     <bind column="groupSet" to="groupSet" search="self.code = :groupSet"/>
   </input>
 
+  <!-- App JBL visible dans l'App Management (Administration -> Apps) :
+       modules = "axelor-jbl" lie automatiquement les menus du module à cette app
+       (meta_menu.app renseigné à l'import), isInAppView = true l'affiche dans la liste. -->
+  <input file="jbl_app.csv" separator=";" type="com.axelor.studio.db.App"
+    search="self.code = :code">
+    <bind column="code" to="code"/>
+    <bind column="name" to="name"/>
+    <bind column="description" to="description"/>
+    <bind column="modules" to="modules"/>
+    <bind column="typeSelect" to="typeSelect"/>
+    <bind column="isCustom" to="isCustom" eval="isCustom == '1' ? 'true' : 'false'"/>
+    <bind column="isInAppView" to="isInAppView" eval="isInAppView == '1' ? 'true' : 'false'"/>
+    <bind column="active" to="active" eval="active == '1' ? 'true' : 'false'"/>
+    <bind column="sequence" to="sequence"/>
+    <bind column="appVersion" to="appVersion"/>
+  </input>
+
 </csv-inputs>

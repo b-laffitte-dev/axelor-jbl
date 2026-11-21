@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <grid name="jbl-equipment-grid" title="View.JblEquipment.Grid.Title" model="com.axelor.apps.jbl.db.JblEquipment"
+        orderBy="code">
+    <field name="code"/>
+    <field name="name"/>
+    <field name="brand"/>
+    <field name="model"/>
+    <field name="serialNumber"/>
+    <field name="partner"/>
+  </grid>
+
+  <form name="jbl-equipment-form" title="View.JblEquipment.Form.Title" model="com.axelor.apps.jbl.db.JblEquipment" width="large">
+    <panel title="Panel.JblEquipment.Main">
+      <field name="code" colSpan="4" readonly="true"/>
+      <field name="name" colSpan="8"/>
+      <field name="brand" colSpan="6"/>
+      <field name="model" colSpan="6"/>
+      <field name="serialNumber" colSpan="6"/>
+      <field name="partner" colSpan="6" domain="self.isCustomer = true" canNew="true" canEdit="true"/>
+      <field name="notes" colSpan="12" widget="html"/>
+    </panel>
+  </form>
+
+</object-views>

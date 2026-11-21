@@ -32,21 +32,24 @@ tout le reste vient de l'écosystème Axelor :
 |---|---|---|
 | Fichier client / fournisseur | axelor-base | `Partner` (`isCustomer` / `isSupplier`) |
 | Pièces détachées | axelor-base | `Product` (`productTypeSelect = 'storable'`) |
-| Matériel client | **axelor-intervention** | `Equipment` (code séquentiel, type, propriétaire, photos) |
+| Matériel client | **JBL (custom)** | `JblEquipment` (code séquentiel `MAT-00001`, marque, modèle, n° série, client) |
 | Devis | **axelor-sale** | `SaleOrder` / `SaleOrderLine` (totaux HT/TVA/TTC, validité, PDF natifs) |
 | Facture + compta + paiements | **axelor-account** | `Invoice` / `InvoiceLine` / `Payment` / `Move` (ventilation, lettrage) |
 | Stock | **axelor-stock** | `StockMove` / `StockMoveLine` / `StockLocation` / `StockLocationLine` / `Inventory` |
-| Commandes fournisseurs | **axelor-purchase** | `PurchaseOrder` |
-| Pont vente → stock → facture | **axelor-supplychain** | `SaleOrder` confirmé → `StockMove` → `Invoice` |
-| Numérotation OR | axelor-base | `Sequence` `jbl.repair.order.seq` → `OR-2026-00001` (data-init) |
-| Fiche d'ordre de réparation | **JBL (custom)** | `JblRepairOrder` + `JblRepairLine`, liés à `Equipment`, `SaleOrder`, `Invoice`, `StockMove` |
+| Numérotation OR / matériel | axelor-base | `MetaSequence` `jbl.repair.order.seq` → `OR-00001`, `jbl.equipment.seq` → `MAT-00001` (data-init) |
+| Fiche d'ordre de réparation | **JBL (custom)** | `JblRepairOrder` + `JblRepairLine`, liés à `JblEquipment`, `SaleOrder`, `Invoice`, `StockMove` |
+
+**Modules AOS embarqués (strict nécessaire)** : `axelor-base`, `axelor-sale` (+ `axelor-crm` transitif), `axelor-account`, `axelor-stock`.
+Retirés du classpath : `axelor-intervention` (remplacé par `JblEquipment` custom — il tirait contract/RH/project/banque), `axelor-purchase`, `axelor-supplychain` (le pont OR → StockMove → Invoice est fait par `RepairOrderServiceImpl`).
+
+**App Management** : le module déclare une app `jbl` (`com.axelor.studio.db.App`, code `jbl`, `isInAppView=true`, data-init `jbl_app.csv`) visible dans *Administration → Apps* ; ses menus sont rattachés à l'app via `modules = "axelor-jbl"`.
 
 ### Workflow d'un ordre de réparation
 
 `OR : Brouillon → Réparation en cours → Terminée → Facturée` (ou `Annulée`)
 
-1. **Créer l'OR** (client + matériel `Equipment` + lignes pièce/main d'œuvre/forfait) ; le n° `OR-2026-00001`
-   est posé automatiquement par la `Sequence` AOP.
+1. **Créer l'OR** (client + matériel `JblEquipment` + lignes pièce/main d'œuvre/forfait) ; le n° `OR-00001`
+   est posé automatiquement par la `MetaSequence` AOP.
 2. Bouton **« Générer un devis »** : crée un `SaleOrder` (lignes copiées de l'OR) — envoi/acceptation/PDF
    gérés nativement par axelor-sale.
 3. **Démarrer la réparation** : statut « en cours ».
@@ -127,16 +130,15 @@ Menus top-level visibles après nettoyage : **Administration** (axelor-base/core
 
 ## Pistes pour la suite
 
-- Configurer les `App*` des modules (AppSale, AppAccount, AppStock, AppIntervention) via
-  *Administration -> Apps* : multi-societe, devises, journaux/comptes comptables pour la ventilation
-  des factures, generation auto facture/stock depuis le SaleOrder (axelor-supplychain).
-- Impressions PDF de l'OR via le moteur BIRT AOP + modele `.rptdesign` (devis/facture ont deja
+- Configurer les `App*` des modules embarqués (AppBase, AppSale, AppAccount, AppStock) via
+  *Administration -> Apps* (l'app **Atelier JBL** y apparaît aussi, code `jbl`) : multi-société,
+  devises, journaux/comptes comptables pour la ventilation des factures.
+- Impressions PDF de l'OR via le moteur BIRT AOP + modèle `.rptdesign` (devis/facture ont déjà
   leurs PDF natifs).
-- Portail client (`axelor-client-portal` / `axelor-portal`) pour suivre l'avancement de la
-  reparation, photos avant/apres sur l'`Equipment` (`MetaFile`), signature electronique du devis.
-- Alertes de stock sous seuil : tableau de bord axelor-stock ou `Batch` planifie.
-- SAV : `axelor-helpdesk` (`Ticket` avec SLA et timers) ou `axelor-intervention`
-  (`CustomerRequest` -> `Intervention`) pour les interventions sur site.
+- Pièces jointes (photos avant/après) sur `JblEquipment` via `MetaFile` (champ `notes` + attachements).
+- Alertes de stock sous seuil : tableau de bord axelor-stock ou `Batch` planifié.
+- Commandes fournisseurs de pièces : réintégrer `axelor-purchase` si besoin (`aos 'axelor-purchase'`).
+- SAV sur site : `axelor-helpdesk` (`Ticket` avec SLA) en addon.
 
 ## Note
 

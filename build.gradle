@@ -44,20 +44,18 @@ dependencies {
     }
   }
 
-  // Base : tiers (Partner), produits, sociétés, utilisateurs, séquences, adresses, TVA...
+  // Strict nécessaire pour le module JBL (vérifié par grep des imports/domains + graphe POM) :
+  // - axelor-base    : Partner, Product, Company, User, Sequence, App, Permission (indispensable)
+  // - axelor-sale    : SaleOrder / SaleOrderLine (devis) — tire axelor-crm en transitif (léger)
+  // - axelor-account : Invoice / InvoiceLine (facture)
+  // - axelor-stock   : StockMove / StockLocation (consommation pièces)
+  // Retirés : axelor-intervention (remplacé par JblEquipment custom — sinon il tire
+  // contract + human-resource + project + bank-payment + supplychain + purchase),
+  // axelor-purchase, axelor-supplychain (pont OR -> StockMove -> Invoice fait par le service JBL).
   aos 'axelor-base'
-  // Devis : SaleOrder / SaleOrderLine (remplace JblQuotation)
   aos 'axelor-sale'
-  // Factures + compta + paiements : Invoice / InvoiceLine / Payment / Move (remplace JblInvoice)
   aos 'axelor-account'
-  // Stock réel : StockMove, emplacements, niveaux de stock, inventaires (remplace JblStock/Movement)
   aos 'axelor-stock'
-  // Commandes fournisseurs de pièces détachées
-  aos 'axelor-purchase'
-  // Matériels clients (Equipment) + demandes/interventions SAV
-  aos 'axelor-intervention'
-  // Pont natif Vente -> Stock -> Facture (SaleOrder confirmé -> StockMove -> Invoice)
-  aos 'axelor-supplychain'
 
   // Driver JDBC PostgreSQL embarqué dans le WAR (AOP ne le fournit pas)
   runtimeOnly 'org.postgresql:postgresql:42.7.14'

@@ -2,10 +2,10 @@
 -- Axelor (menu Administration) + le module Atelier JBL.
 -- - supprime l'utilisateur de démo (garde admin)
 -- - cache tous les menus top-level hors Administration / Atelier JBL
---   (studio, messagerie, teamwork, vente, comptabilité, stock, intervention...)
--- Les menus métier AOS (axelor-sale, axelor-account, axelor-stock, axelor-intervention,
--- axelor-supplychain...) restent dans le classpath car le module JBL s'appuie dessus ;
--- seuls leurs menus top-level sont masqués, le menu "Atelier JBL" pointe vers leurs vues.
+--   (studio, messagerie, crm, vente, comptabilité, stock...)
+-- Les modules AOS embarqués (base, sale, account, stock + crm transitif) restent dans le
+-- classpath car le module JBL s'appuie dessus ; seuls leurs menus top-level sont masqués,
+-- le menu "Atelier JBL" pointe vers leurs vues via les action-view du module.
 BEGIN;
 DELETE FROM auth_user WHERE code = 'demo';
 
