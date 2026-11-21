@@ -39,8 +39,21 @@ tout le reste vient de l'écosystème Axelor :
 | Numérotation OR / matériel | axelor-base | `MetaSequence` `jbl.repair.order.seq` → `OR-00001`, `jbl.equipment.seq` → `MAT-00001` (data-init) |
 | Fiche d'ordre de réparation | **JBL (custom)** | `JblRepairOrder` + `JblRepairLine`, liés à `JblEquipment`, `SaleOrder`, `Invoice`, `StockMove` |
 
-**Modules AOS embarqués (strict nécessaire)** : `axelor-base`, `axelor-sale` (+ `axelor-crm` transitif), `axelor-account`, `axelor-stock`.
-Retirés du classpath : `axelor-intervention` (remplacé par `JblEquipment` custom — il tirait contract/RH/project/banque), `axelor-purchase`, `axelor-supplychain` (le pont OR → StockMove → Invoice est fait par `RepairOrderServiceImpl`).
+**Modules AOS embarqués (strict nécessaire)** : `axelor-base`, `axelor-sale` (+ `axelor-crm` transitif), `axelor-account`, `axelor-stock`, `axelor-purchase`.
+Retirés du classpath : `axelor-intervention` (remplacé par `JblEquipment` custom — il tirait contract/RH/project/banque), `axelor-supplychain` (le pont OR → StockMove → Invoice est fait par `RepairOrderServiceImpl`).
+
+> **Pourquoi `axelor-purchase` est embarqué alors que le code JBL ne l'utilise pas** :
+> `axelor-stock` contient la vue d'extension `views/CallTenderSupplier.xml` dont le
+> `model="com.axelor.apps.purchase.db.CallTenderSupplier"`. Sans le jar purchase, `ViewLoader`
+> lève `IllegalArgumentException: Invalid view, model not found` pendant l'installation de
+> stock, ce qui **abote la boucle d'installation des modules** (`ModuleManager.installModules`
+> → forEach) : `axelor-jbl`, bien que « pending », n'est jamais installé et ses menus/vues
+> n'existent pas en base. Symptôme : boot OK, app active, mais 0 ligne `meta_menu`/`meta_view`
+> pour `axelor-jbl`. `axelor-purchase` ne dépend que de `axelor-base` (aucun tirage supplychain).
+>
+> Piège data-init : les `importId` des CSV (`jbl_permissions.csv`, `jbl_meta_sequence.csv`)
+> doivent être uniques **dans toute la table** (contrainte `uk_...` sur `import_id`) —
+> ceux des modules AOS occupent déjà 1..N, utiliser des valeurs hautes (ex: 9101+).
 
 **App Management** : le module déclare une app `jbl` via `src/main/resources/apps/jbl.yml`
 (mécanisme natif AOS, chargé par `AppService` à chaque boot — contrairement au data-init qui

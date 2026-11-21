@@ -1,3 +1,4 @@
 "importId";"name";"object";"canRead";"canWrite";"canCreate";"canRemove";"canExport";"groupSet"
-1;"perm.jbl.repair.order";"com.axelor.apps.jbl.db.JblRepairOrder";1;1;1;1;1;"self.code = 'admins'"
-2;"perm.jbl.repair.line";"com.axelor.apps.jbl.db.JblRepairLine";1;1;1;1;1;"self.code = 'admins'"
+9101;"perm.jbl.repair.order";"com.axelor.apps.jbl.db.JblRepairOrder";1;1;1;1;1;"self.code = 'admins'"
+9102;"perm.jbl.repair.line";"com.axelor.apps.jbl.db.JblRepairLine";1;1;1;1;1;"self.code = 'admins'"
+9103;"perm.jbl.equipment";"com.axelor.apps.jbl.db.JblEquipment";1;1;1;1;1;"self.code = 'admins'"

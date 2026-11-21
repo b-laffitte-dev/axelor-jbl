@@ -49,13 +49,19 @@ dependencies {
   // - axelor-sale    : SaleOrder / SaleOrderLine (devis) — tire axelor-crm en transitif (léger)
   // - axelor-account : Invoice / InvoiceLine (facture)
   // - axelor-stock   : StockMove / StockLocation (consommation pièces)
+  // - axelor-purchase : OBLIGATOIRE bien que non référencé par le code JBL — axelor-stock contient
+  //   la vue d'extension views/CallTenderSupplier.xml (model=com.axelor.apps.purchase.db.CallTenderSupplier) ;
+  //   sans le jar purchase, ViewLoader lève "Invalid view, model not found" pendant l'installation de
+  //   stock, ce qui aborte la boucle d'installation et empêche axelor-jbl d'être installé.
+  //   axelor-purchase ne dépend que de axelor-base (aucun module supplychain/contract tiré).
   // Retirés : axelor-intervention (remplacé par JblEquipment custom — sinon il tire
   // contract + human-resource + project + bank-payment + supplychain + purchase),
-  // axelor-purchase, axelor-supplychain (pont OR -> StockMove -> Invoice fait par le service JBL).
+  // axelor-supplychain (pont OR -> StockMove -> Invoice fait par le service JBL).
   aos 'axelor-base'
   aos 'axelor-sale'
   aos 'axelor-account'
   aos 'axelor-stock'
+  aos 'axelor-purchase'
 
   // Driver JDBC PostgreSQL embarqué dans le WAR (AOP ne le fournit pas)
   runtimeOnly 'org.postgresql:postgresql:42.7.14'

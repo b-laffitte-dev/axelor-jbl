@@ -5,6 +5,10 @@ services:
       POSTGRES_DB: axelor_jbl
       POSTGRES_USER: axelor
       POSTGRES_PASSWORD: axelor
+    # Port hôte 5433 (5432 est souvent pris par un tunnel SSH local) :
+    # axelor-config.properties pointe sur localhost:5433 en dev.
+    ports:
+      - "5433:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
     healthcheck:
