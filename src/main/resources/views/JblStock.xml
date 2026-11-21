@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<views xmlns="http://axelor.com/xml/ns/views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/views https://axelor.com/xml/ns/views/views_8.2.xsd">
+
+  <!-- ================= Stock pièces ================= -->
+  <grid name="jbl-stock-grid" title="Stock pièces détachées" model="com.axelor.apps.jbl.db.JblStock">
+    <field name="product"/>
+    <field name="quantity"/>
+    <field name="minQuantity"/>
+  </grid>
+
+  <form name="jbl-stock-form" title="Stock pièce" model="com.axelor.apps.jbl.db.JblStock" width="large">
+    <panel title="Stock">
+      <field name="product" colSpan="6" domain="self.productTypeSelect = 'storable'"/>
+      <field name="quantity" colSpan="3" readonly="true"/>
+      <field name="minQuantity" colSpan="3"/>
+    </panel>
+    <panel title="Historique des mouvements">
+      <panel-related name="movementListPanel" field="movementList" colSpan="12"
+                     grid-view="jbl-stock-movement-grid" form-view="jbl-stock-movement-form"
+                     canNew="true" canEdit="false" canRemove="false"/>
+    </panel>
+  </form>
+
+  <!-- ================= Mouvements de stock ================= -->
+  <grid name="jbl-stock-movement-grid" title="Mouvements de stock" model="com.axelor.apps.jbl.db.JblStockMovement">
+    <field name="name"/>
+    <field name="typeSelect" widget="NavSelect"/>
+    <field name="product"/>
+    <field name="quantity"/>
+    <field name="movementDate"/>
+    <field name="repairOrder"/>
+    <field name="partner"/>
+    <field name="reference"/>
+    <field name="applied"/>
+  </grid>
+
+  <form name="jbl-stock-movement-form" title="Mouvement de stock" model="com.axelor.apps.jbl.db.JblStockMovement"
+        onNew="action-jbl-stock-movement-onnew">
+    <panel title="Mouvement de stock">
+      <field name="name" colSpan="4" readonly="true"/>
+      <field name="typeSelect" colSpan="4" widget="NavSelect"/>
+      <field name="applied" colSpan="4" readonly="true"/>
+      <field name="product" colSpan="6" domain="self.productTypeSelect = 'storable'"/>
+      <field name="quantity" colSpan="6"/>
+      <field name="movementDate" colSpan="6"/>
+      <field name="repairOrder" colSpan="6" showIf="typeSelect == 1"/>
+      <field name="partner" colSpan="6" domain="self.isSupplier = true" showIf="typeSelect == 0"/>
+      <field name="reference" colSpan="6"/>
+      <field name="note" colSpan="12" widget="html"/>
+    </panel>
+    <panel sidebar="true">
+      <button name="btnApply" title="Appliquer au stock" colSpan="12"
+              onClick="save,action-jbl-stock-movement-method-apply" showIf="!applied"/>
+    </panel>
+  </form>
+
+</views>

@@ -1,0 +1,35 @@
+plugins {
+  id 'com.axelor.app'
+}
+
+axelor {
+  title       = 'JBL Atelier'
+  description = "V0 - Gestion d'atelier de réparation de matériel de jardinage (tondeuses, tronçonneuses, etc.)"
+}
+
+allprojects {
+  group = 'com.axelor.apps.jbl'
+  version = '0.1.0'
+
+  java {
+    toolchain {
+      languageVersion = JavaLanguageVersion.of(21)
+    }
+  }
+
+  afterEvaluate {
+    test {
+      useJUnitPlatform()
+    }
+  }
+}
+
+// Nom stable du WAR produit (repris tel quel dans le Dockerfile)
+war {
+  archiveFileName = 'axelor-jbl.war'
+}
+
+dependencies {
+  // Module métier Axelor : tiers (Partner = client/fournisseur), produits, sociétés, utilisateurs...
+  implementation "com.axelor.apps:axelor-base:${axelorVersion}"
+}

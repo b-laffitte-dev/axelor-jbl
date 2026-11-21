@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: axelor_jbl
+      POSTGRES_USER: axelor
+      POSTGRES_PASSWORD: axelor
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U axelor -d axelor_jbl"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  app:
+    build: .
+    image: axelor-jbl:latest
+    ports:
+      - "8080:8080"
+    environment:
+      # AOP lit aussi les variables d'env au format AXELOR_CONFIG_<CLÉ> :
+      # db.default.url -> AXELOR_CONFIG_DB_DEFAULT_URL, etc.
+      AXELOR_CONFIG_APPLICATION_MODE: prod
+      AXELOR_CONFIG_DB_DEFAULT_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      AXELOR_CONFIG_DB_DEFAULT_DDL: update
+      AXELOR_CONFIG_DB_DEFAULT_URL: jdbc:postgresql://db:5432/axelor_jbl
+      AXELOR_CONFIG_DB_DEFAULT_USER: axelor
+      AXELOR_CONFIG_DB_DEFAULT_PASSWORD: axelor
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<views xmlns="http://axelor.com/xml/ns/views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/views https://axelor.com/xml/ns/views/views_8.2.xsd">
+
+  <menuitem name="menu-jbl-root" title="Atelier JBL" icon="fa-wrench" order="-100"/>
+
+  <menuitem name="menu-jbl-orders" parent="menu-jbl-root" title="Ordres de réparation"
+            action="action-jbl-repair-order-all" order="10"/>
+  <menuitem name="menu-jbl-quotations" parent="menu-jbl-root" title="Devis"
+            action="action-jbl-quotation-all" order="20"/>
+  <menuitem name="menu-jbl-invoices" parent="menu-jbl-root" title="Factures"
+            action="action-jbl-invoice-all" order="30"/>
+  <menuitem name="menu-jbl-equipments" parent="menu-jbl-root" title="Matériels clients"
+            action="action-jbl-equipment-all" order="40"/>
+
+  <menuitem name="menu-jbl-contacts" parent="menu-jbl-root" title="Contacts" order="50">
+    <menuitem name="menu-jbl-clients" parent="menu-jbl-contacts" title="Clients"
+              action="action-jbl-partner-clients" order="10"/>
+    <menuitem name="menu-jbl-suppliers" parent="menu-jbl-contacts" title="Fournisseurs"
+              action="action-jbl-partner-suppliers" order="20"/>
+  </menuitem>
+
+  <menuitem name="menu-jbl-stock" parent="menu-jbl-root" title="Stock" order="60">
+    <menuitem name="menu-jbl-stock-parts" parent="menu-jbl-stock" title="Stock pièces"
+              action="action-jbl-stock-all" order="10"/>
+    <menuitem name="menu-jbl-stock-movements" parent="menu-jbl-stock" title="Mouvements de stock"
+              action="action-jbl-stock-movement-all" order="20"/>
+  </menuitem>
+
+  <menuitem name="menu-jbl-products" parent="menu-jbl-root" title="Pièces détachées"
+            action="action-jbl-product-parts" order="70"/>
+
+</views>

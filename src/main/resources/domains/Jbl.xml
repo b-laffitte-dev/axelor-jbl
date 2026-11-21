@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
+
+  <module name="Jbl" package="com.axelor.apps.jbl.db">
+
+    <!-- ================================================================== -->
+    <!-- Matériel de jardinage confié à l'atelier                           -->
+    <!-- ================================================================== -->
+    <entity name="JblEquipment">
+      <![CDATA[Matériel de motoculture confié à l'atelier (tondeuse, tronçonneuse, débroussailleuse, etc.)]]>
+      <string name="code" title="Référence" unique="true"/>
+      <string name="name" title="Désignation" required="true"/>
+      <integer name="equipmentTypeSelect" title="Type de matériel" selection="jbl.equipment.type.select" required="true" default="8"/>
+      <string name="brand" title="Marque"/>
+      <string name="model" title="Modèle"/>
+      <string name="serialNumber" title="N° de série"/>
+      <date name="purchaseDate" title="Date d'achat"/>
+      <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Propriétaire"/>
+      <text name="description" title="Description / symptômes"/>
+    </entity>
+
+    <!-- ================================================================== -->
+    <!-- Fiche d'ordre de réparation (OR)                                   -->
+    <!-- ================================================================== -->
+    <entity name="JblRepairOrder">
+      <![CDATA[Fiche d'ordre de réparation d'un matériel de jardinage]]>
+      <string name="name" title="N° d'OR" unique="true"/>
+      <integer name="statusSelect" title="Statut" selection="jbl.repair.order.status.select" default="0"/>
+      <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Client" required="true"/>
+      <many-to-one name="equipment" ref="com.axelor.apps.jbl.db.JblEquipment" title="Matériel enregistré"/>
+      <string name="materialDescription" title="Matériel (si non enregistré)" large="true"/>
+      <date name="receptionDate" title="Date de réception" required="true"/>
+      <date name="plannedDate" title="Date prévue de restitution"/>
+      <many-to-one name="technician" ref="com.axelor.auth.db.User" title="Technicien"/>
+      <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Société"/>
+      <text name="diagnosis" title="Diagnostic / panne constatée"/>
+      <text name="workDone" title="Travaux réalisés"/>
+      <text name="internalNotes" title="Notes internes"/>
+      <one-to-many name="repairLineList" ref="com.axelor.apps.jbl.db.JblRepairLine" mappedBy="repairOrder" title="Lignes de réparation"/>
+      <decimal name="totalHT" title="Total HT" scale="2" readonly="true"/>
+      <decimal name="vatRate" title="TVA (%)" scale="2" default="20"/>
+      <decimal name="totalVAT" title="Montant TVA" scale="2" readonly="true"/>
+      <decimal name="totalTTC" title="Total TTC" scale="2" readonly="true"/>
+      <many-to-one name="quotation" ref="com.axelor.apps.jbl.db.JblQuotation" title="Devis généré"/>
+      <many-to-one name="invoice" ref="com.axelor.apps.jbl.db.JblInvoice" title="Facture générée"/>
+    </entity>
+
+    <!-- ================================================================== -->
+    <!-- Ligne d'OR : pièce détachée, main d'oeuvre ou forfait             -->
+    <!-- ================================================================== -->
+    <entity name="JblRepairLine">
+      <![CDATA[Ligne d'un ordre de réparation : pièce détachée, main d'œuvre ou forfait]]>
+      <many-to-one name="repairOrder" ref="com.axelor.apps.jbl.db.JblRepairOrder" title="Ordre de réparation"/>
+      <integer name="lineTypeSelect" title="Type de ligne" selection="jbl.repair.line.type.select" required="true" default="0"/>
+      <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Pièce détachée"/>
+      <string name="description" title="Désignation" required="true"/>
+      <decimal name="quantity" title="Qté (ou heures pour la main d'œuvre)" scale="3" default="1"/>
+      <decimal name="unitPriceHT" title="PU HT" scale="2"/>
+      <decimal name="totalHT" title="Total HT" scale="2" readonly="true"/>
+    </entity>
+
+    <!-- ================================================================== -->
+    <!-- Devis                                                              -->
+    <!-- ================================================================== -->
+    <entity name="JblQuotation">
+      <![CDATA[Devis envoyé au client pour une réparation]]>
+      <string name="name" title="N° de devis" unique="true"/>
+      <integer name="statusSelect" title="Statut" selection="jbl.quotation.status.select" default="0"/>
+      <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Client" required="true"/>
+      <many-to-one name="repairOrder" ref="com.axelor.apps.jbl.db.JblRepairOrder" title="Ordre de réparation"/>
+      <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Société"/>
+      <date name="quotationDate" title="Date du devis" required="true"/>
+      <date name="validUntil" title="Valable jusqu'au"/>
+      <one-to-many name="lineList" ref="com.axelor.apps.jbl.db.JblQuotationLine" mappedBy="quotation" title="Lignes du devis"/>
+      <decimal name="totalHT" title="Total HT" scale="2" readonly="true"/>
+      <decimal name="vatRate" title="TVA (%)" scale="2" default="20"/>
+      <decimal name="totalVAT" title="Montant TVA" scale="2" readonly="true"/>
+      <decimal name="totalTTC" title="Total TTC" scale="2" readonly="true"/>
+      <many-to-one name="invoice" ref="com.axelor.apps.jbl.db.JblInvoice" title="Facture issue de ce devis"/>
+    </entity>
+
+    <entity name="JblQuotationLine">
+      <![CDATA[Ligne de devis]]>
+      <many-to-one name="quotation" ref="com.axelor.apps.jbl.db.JblQuotation" title="Devis"/>
+      <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Pièce détachée"/>
+      <string name="description" title="Désignation" required="true"/>
+      <decimal name="quantity" title="Qté" scale="3" default="1"/>
+      <decimal name="unitPriceHT" title="PU HT" scale="2"/>
+      <decimal name="totalHT" title="Total HT" scale="2" readonly="true"/>
+    </entity>
+
+    <!-- ================================================================== -->
+    <!-- Facture                                                            -->
+    <!-- ================================================================== -->
+    <entity name="JblInvoice">
+      <![CDATA[Facture de réparation]]>
+      <string name="name" title="N° de facture" unique="true"/>
+      <integer name="statusSelect" title="Statut" selection="jbl.invoice.status.select" default="0"/>
+      <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Client" required="true"/>
+      <many-to-one name="repairOrder" ref="com.axelor.apps.jbl.db.JblRepairOrder" title="Ordre de réparation"/>
+      <many-to-one name="quotation" ref="com.axelor.apps.jbl.db.JblQuotation" title="Devis d'origine"/>
+      <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Société"/>
+      <date name="invoiceDate" title="Date de facture" required="true"/>
+      <date name="dueDate" title="Date d'échéance"/>
+      <one-to-many name="lineList" ref="com.axelor.apps.jbl.db.JblInvoiceLine" mappedBy="invoice" title="Lignes de facture"/>
+      <decimal name="totalHT" title="Total HT" scale="2" readonly="true"/>
+      <decimal name="vatRate" title="TVA (%)" scale="2" default="20"/>
+      <decimal name="totalVAT" title="Montant TVA" scale="2" readonly="true"/>
+      <decimal name="totalTTC" title="Total TTC" scale="2" readonly="true"/>
+      <date name="paymentDate" title="Date de règlement"/>
+    </entity>
+
+    <entity name="JblInvoiceLine">
+      <![CDATA[Ligne de facture]]>
+      <many-to-one name="invoice" ref="com.axelor.apps.jbl.db.JblInvoice" title="Facture"/>
+      <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Pièce détachée"/>
+      <string name="description" title="Désignation" required="true"/>
+      <decimal name="quantity" title="Qté" scale="3" default="1"/>
+      <decimal name="unitPriceHT" title="PU HT" scale="2"/>
+      <decimal name="totalHT" title="Total HT" scale="2" readonly="true"/>
+    </entity>
+
+    <!-- ================================================================== -->
+    <!-- Stock de pièces détachées de l'atelier                             -->
+    <!-- ================================================================== -->
+    <entity name="JblStock">
+      <![CDATA[Stock de pièces détachées de l'atelier (une ligne par produit)]]>
+      <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Pièce" required="true" unique="true"/>
+      <decimal name="quantity" title="Quantité en stock" scale="3" default="0"/>
+      <decimal name="minQuantity" title="Seuil d'alerte" scale="3" default="0"/>
+      <one-to-many name="movementList" ref="com.axelor.apps.jbl.db.JblStockMovement" mappedBy="stock" title="Mouvements"/>
+    </entity>
+
+    <entity name="JblStockMovement">
+      <![CDATA[Mouvement de stock de pièces détachées (entrée fournisseur, sortie atelier, ajustement)]]>
+      <string name="name" title="N° de mouvement" unique="true"/>
+      <integer name="typeSelect" title="Type" selection="jbl.stock.movement.type.select" required="true" default="0"/>
+      <many-to-one name="stock" ref="com.axelor.apps.jbl.db.JblStock" title="Ligne de stock"/>
+      <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Pièce" required="true"/>
+      <decimal name="quantity" title="Quantité" scale="3" required="true" default="1"/>
+      <date name="movementDate" title="Date" required="true"/>
+      <many-to-one name="repairOrder" ref="com.axelor.apps.jbl.db.JblRepairOrder" title="OR lié (si sortie)"/>
+      <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Fournisseur (si entrée)"/>
+      <string name="reference" title="Référence (ex. n° de bon de livraison)"/>
+      <text name="note" title="Note"/>
+      <boolean name="applied" title="Appliqué au stock" default="false"/>
+    </entity>
+
+  </module>
+</domain-models>

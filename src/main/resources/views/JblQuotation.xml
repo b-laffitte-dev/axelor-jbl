@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<views xmlns="http://axelor.com/xml/ns/views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/views https://axelor.com/xml/ns/views/views_8.2.xsd">
+
+  <grid name="jbl-quotation-grid" title="Devis" model="com.axelor.apps.jbl.db.JblQuotation">
+    <field name="name"/>
+    <field name="statusSelect" widget="NavSelect"/>
+    <field name="partner"/>
+    <field name="quotationDate"/>
+    <field name="validUntil"/>
+    <field name="repairOrder"/>
+    <field name="totalTTC"/>
+  </grid>
+
+  <form name="jbl-quotation-form" title="Devis" model="com.axelor.apps.jbl.db.JblQuotation" width="large"
+        onNew="action-jbl-quotation-onnew" onSave="action-jbl-quotation-method-compute">
+    <panel title="Devis">
+      <field name="name" colSpan="3" readonly="true"/>
+      <field name="statusSelect" colSpan="3" widget="NavSelect" readonly="true"/>
+      <field name="quotationDate" colSpan="3"/>
+      <field name="validUntil" colSpan="3"/>
+      <field name="partner" colSpan="6" domain="self.isCustomer = true" canNew="true" canEdit="true"/>
+      <field name="company" colSpan="6" readonly="true"/>
+      <field name="repairOrder" colSpan="6"/>
+    </panel>
+    <panel title="Lignes du devis">
+      <panel-related name="lineListPanel" field="lineList" colSpan="12"
+                     grid-view="jbl-quotation-line-grid" form-view="jbl-quotation-line-form"
+                     canNew="true" canEdit="true" canRemove="true"/>
+    </panel>
+    <panel title="Totaux">
+      <field name="totalHT" colSpan="3" readonly="true"/>
+      <field name="vatRate" colSpan="3"/>
+      <field name="totalVAT" colSpan="3" readonly="true"/>
+      <field name="totalTTC" colSpan="3" readonly="true"/>
+    </panel>
+    <panel title="Facture liée">
+      <field name="invoice" colSpan="6" readonly="true"/>
+    </panel>
+    <panel sidebar="true">
+      <button name="btnCompute" title="Recalculer les totaux" colSpan="12"
+              onClick="save,action-jbl-quotation-method-compute"/>
+      <button name="btnSend" title="Marquer comme envoyé" colSpan="12"
+              onClick="save,action-jbl-quotation-method-send" showIf="statusSelect == 0"/>
+      <button name="btnAccept" title="Accepté par le client" colSpan="12"
+              onClick="save,action-jbl-quotation-method-accept" showIf="statusSelect == 1"/>
+      <button name="btnRefuse" title="Refusé par le client" colSpan="12"
+              onClick="save,action-jbl-quotation-method-refuse" showIf="statusSelect == 1"/>
+      <button name="btnToInvoice" title="Générer la facture" colSpan="12"
+              onClick="save,action-jbl-quotation-method-to-invoice" showIf="statusSelect == 2"/>
+    </panel>
+  </form>
+
+  <grid name="jbl-quotation-line-grid" title="Lignes de devis" model="com.axelor.apps.jbl.db.JblQuotationLine">
+    <field name="product"/>
+    <field name="description"/>
+    <field name="quantity"/>
+    <field name="unitPriceHT"/>
+    <field name="totalHT"/>
+  </grid>
+
+  <form name="jbl-quotation-line-form" title="Ligne de devis" model="com.axelor.apps.jbl.db.JblQuotationLine">
+    <panel>
+      <field name="product" colSpan="6" domain="self.productTypeSelect = 'storable'"/>
+      <field name="description" colSpan="12"/>
+      <field name="quantity" colSpan="4"/>
+      <field name="unitPriceHT" colSpan="4"/>
+      <field name="totalHT" colSpan="4" readonly="true"/>
+    </panel>
+  </form>
+
+</views>

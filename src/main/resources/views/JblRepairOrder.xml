@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<views xmlns="http://axelor.com/xml/ns/views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/views https://axelor.com/xml/ns/views/views_8.2.xsd">
+
+  <grid name="jbl-repair-order-grid" title="Ordres de réparation" model="com.axelor.apps.jbl.db.JblRepairOrder">
+    <field name="name"/>
+    <field name="statusSelect" widget="NavSelect"/>
+    <field name="partner"/>
+    <field name="equipment"/>
+    <field name="receptionDate"/>
+    <field name="plannedDate"/>
+    <field name="technician"/>
+    <field name="totalTTC"/>
+  </grid>
+
+  <form name="jbl-repair-order-form" title="Ordre de réparation" model="com.axelor.apps.jbl.db.JblRepairOrder" width="large"
+        onNew="action-jbl-repair-order-onnew" onSave="action-jbl-repair-order-method-compute">
+    <panel title="Ordre de réparation">
+      <field name="name" colSpan="3" readonly="true"/>
+      <field name="statusSelect" colSpan="3" widget="NavSelect" readonly="true"/>
+      <field name="receptionDate" colSpan="3"/>
+      <field name="plannedDate" colSpan="3"/>
+      <field name="partner" colSpan="6" domain="self.isCustomer = true" canNew="true" canEdit="true"/>
+      <field name="company" colSpan="6" readonly="true"/>
+      <field name="equipment" colSpan="6" canNew="true" canEdit="true"/>
+      <field name="materialDescription" colSpan="6"/>
+      <field name="technician" colSpan="6"/>
+      <field name="diagnosis" colSpan="12" widget="html"/>
+      <field name="workDone" colSpan="12" widget="html"/>
+      <field name="internalNotes" colSpan="12" widget="html"/>
+    </panel>
+    <panel title="Lignes de réparation (pièces / main d'œuvre)">
+      <panel-related name="repairLineListPanel" field="repairLineList" colSpan="12"
+                     grid-view="jbl-repair-line-grid" form-view="jbl-repair-line-form"
+                     canNew="true" canEdit="true" canRemove="true"/>
+    </panel>
+    <panel title="Totaux">
+      <field name="totalHT" colSpan="3" readonly="true"/>
+      <field name="vatRate" colSpan="3"/>
+      <field name="totalVAT" colSpan="3" readonly="true"/>
+      <field name="totalTTC" colSpan="3" readonly="true"/>
+    </panel>
+    <panel title="Documents liés">
+      <field name="quotation" colSpan="6" readonly="true"/>
+      <field name="invoice" colSpan="6" readonly="true"/>
+    </panel>
+    <panel sidebar="true">
+      <button name="btnCompute" title="Recalculer les totaux" colSpan="12"
+              onClick="save,action-jbl-repair-order-method-compute"/>
+      <button name="btnConfirm" title="Confirmer → générer le devis" colSpan="12"
+              onClick="save,action-jbl-repair-order-method-confirm" showIf="statusSelect == 0"/>
+      <button name="btnStart" title="Démarrer la réparation" colSpan="12"
+              onClick="save,action-jbl-repair-order-method-start" showIf="statusSelect == 1"/>
+      <button name="btnComplete" title="Terminer (consomme les pièces en stock)" colSpan="12"
+              onClick="save,action-jbl-repair-order-method-complete" showIf="statusSelect == 2"/>
+      <button name="btnCancel" title="Annuler l'OR" colSpan="12"
+              onClick="save,action-jbl-repair-order-method-cancel" showIf="statusSelect &lt; 3"/>
+    </panel>
+  </form>
+
+  <grid name="jbl-repair-line-grid" title="Lignes de réparation" model="com.axelor.apps.jbl.db.JblRepairLine">
+    <field name="lineTypeSelect" widget="NavSelect"/>
+    <field name="product"/>
+    <field name="description"/>
+    <field name="quantity"/>
+    <field name="unitPriceHT"/>
+    <field name="totalHT"/>
+  </grid>
+
+  <form name="jbl-repair-line-form" title="Ligne de réparation" model="com.axelor.apps.jbl.db.JblRepairLine"
+        onSave="action-jbl-repair-order-method-compute">
+    <panel>
+      <field name="lineTypeSelect" colSpan="6" widget="NavSelect"/>
+      <field name="product" colSpan="6" showIf="lineTypeSelect == 0" domain="self.productTypeSelect = 'storable'"/>
+      <field name="description" colSpan="12"/>
+      <field name="quantity" colSpan="4"/>
+      <field name="unitPriceHT" colSpan="4"/>
+      <field name="totalHT" colSpan="4" readonly="true"/>
+    </panel>
+  </form>
+
+</views>

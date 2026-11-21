@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <!-- Nomenclature : jbl.<entité>.<champ>.select -->
+
+  <selection name="jbl.equipment.type.select">
+    <option value="1">Tondeuse</option>
+    <option value="2">Tondeuse autoportée</option>
+    <option value="3">Tronçonneuse</option>
+    <option value="4">Débroussailleuse</option>
+    <option value="5">Motoculteur</option>
+    <option value="6">Taille-haie</option>
+    <option value="7">Souffleur</option>
+    <option value="8">Autre matériel</option>
+  </selection>
+
+  <selection name="jbl.repair.order.status.select">
+    <option value="0">Brouillon</option>
+    <option value="1">Devis envoyé</option>
+    <option value="2">Réparation en cours</option>
+    <option value="3">Terminée</option>
+    <option value="4">Facturée</option>
+    <option value="5">Annulée</option>
+  </selection>
+
+  <selection name="jbl.repair.line.type.select">
+    <option value="0">Pièce détachée</option>
+    <option value="1">Main d'œuvre</option>
+    <option value="2">Forfait / divers</option>
+  </selection>
+
+  <selection name="jbl.quotation.status.select">
+    <option value="0">Brouillon</option>
+    <option value="1">Envoyé au client</option>
+    <option value="2">Accepté</option>
+    <option value="3">Refusé</option>
+  </selection>
+
+  <selection name="jbl.invoice.status.select">
+    <option value="0">Brouillon</option>
+    <option value="1">Validée</option>
+    <option value="2">Payée</option>
+    <option value="3">Annulée</option>
+  </selection>
+
+  <selection name="jbl.stock.movement.type.select">
+    <option value="0">Entrée (réception fournisseur)</option>
+    <option value="1">Sortie (consommation atelier)</option>
+    <option value="2">Ajustement d'inventaire</option>
+  </selection>
+
+</object-views>
