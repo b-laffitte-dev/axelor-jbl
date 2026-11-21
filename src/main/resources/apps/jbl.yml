@@ -1,0 +1,16 @@
+---
+# App JBL Atelier — chargée au boot par AppService (comme apps/sale.yml des modules AOS).
+# isCustom reste null => l'app passe le filtre de l'App Management
+# (self.isCustom = null OR false OR (true AND isInAppView = true)).
+# modules = "axelor-jbl" (rootProject.name) lie les menus du module à cette app.
+name: Atelier JBL
+code: jbl
+typeSelect: custom
+installOrder: 9000
+description: |
+   Gestion d'atelier de réparation de matériel de jardinage :
+   ordres de réparation, devis, factures, consommation de stock.
+image: app-jbl.png
+modules:
+   axelor-jbl
+sequence: 90

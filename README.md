@@ -42,7 +42,12 @@ tout le reste vient de l'écosystème Axelor :
 **Modules AOS embarqués (strict nécessaire)** : `axelor-base`, `axelor-sale` (+ `axelor-crm` transitif), `axelor-account`, `axelor-stock`.
 Retirés du classpath : `axelor-intervention` (remplacé par `JblEquipment` custom — il tirait contract/RH/project/banque), `axelor-purchase`, `axelor-supplychain` (le pont OR → StockMove → Invoice est fait par `RepairOrderServiceImpl`).
 
-**App Management** : le module déclare une app `jbl` (`com.axelor.studio.db.App`, code `jbl`, `isInAppView=true`, data-init `jbl_app.csv`) visible dans *Administration → Apps* ; ses menus sont rattachés à l'app via `modules = "axelor-jbl"`.
+**App Management** : le module déclare une app `jbl` via `src/main/resources/apps/jbl.yml`
+(mécanisme natif AOS, chargé par `AppService` à chaque boot — contrairement au data-init qui
+ne se joue qu'au premier démarrage). L'app apparaît en carte dans *Administration → Application
+Config → Apps management* (filtre `isCustom = null OR ...` ; on ne touche pas `isCustom`).
+`modules: axelor-jbl` rattache automatiquement les menus du module à l'app. Image : `apps/img/app-jbl.png`.
+Vérification en base : `SELECT code, name, active, modules FROM studio_app WHERE code = 'jbl';`
 
 ### Workflow d'un ordre de réparation
 
