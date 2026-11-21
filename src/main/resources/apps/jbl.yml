@@ -7,6 +7,9 @@ name: Atelier JBL
 code: jbl
 typeSelect: custom
 installOrder: 9000
+# active: true dès le boot — sinon AOP masque les menus du module "axelor-jbl"
+# (un menu dont le module appartient à une app inactive est caché au chargement).
+active: true
 description: |
    Gestion d'atelier de réparation de matériel de jardinage :
    ordres de réparation, devis, factures, consommation de stock.

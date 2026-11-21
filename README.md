@@ -46,8 +46,14 @@ Retirés du classpath : `axelor-intervention` (remplacé par `JblEquipment` cust
 (mécanisme natif AOS, chargé par `AppService` à chaque boot — contrairement au data-init qui
 ne se joue qu'au premier démarrage). L'app apparaît en carte dans *Administration → Application
 Config → Apps management* (filtre `isCustom = null OR ...` ; on ne touche pas `isCustom`).
-`modules: axelor-jbl` rattache automatiquement les menus du module à l'app. Image : `apps/img/app-jbl.png`.
+`modules: axelor-jbl` rattache les menus du module à l'app, et **`active: true`** est obligatoire :
+AOP masque les menus dont le module appartient à une app inactive — sans `active: true`, le menu
+« Atelier JBL » disparaît au boot. Image : `apps/img/app-jbl.png`.
+- **Ne pas mettre `top="true"` sur un menuitem en AOP 8.2** : le XSD 8.2 (`MenuItem`) n'a pas cet
+  attribut (apparu en 10.0) — un attribut invalide fait rejeter tout le fichier `Menus.xml` au
+  chargement et aucun menu du module n'est créé. Un menu sans `parent` est déjà top-level.
 Vérification en base : `SELECT code, name, active, modules FROM studio_app WHERE code = 'jbl';`
+et `SELECT name, hidden, module FROM meta_menu WHERE name LIKE 'menu-jbl%';`
 
 ### Workflow d'un ordre de réparation
 

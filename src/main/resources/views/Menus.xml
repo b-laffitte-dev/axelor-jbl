@@ -3,7 +3,9 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
-  <menuitem name="menu-jbl-root" title="menu.jbl.root" icon="fa-wrench" order="-100" top="true"/>
+  <!-- AOP 8.2 : pas d'attribut top= sur menuitem (XSD MenuItem) — un attribut invalide
+       fait rejeter tout le fichier au chargement. Un menu sans parent est déjà top-level. -->
+  <menuitem name="menu-jbl-root" title="menu.jbl.root" icon="fa-wrench" order="-100"/>
 
   <menuitem name="menu-jbl-orders" parent="menu-jbl-root" title="menu.jbl.orders"
             action="action-jbl-repair-order-all" order="10"/>
