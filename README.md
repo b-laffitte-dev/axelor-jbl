@@ -61,9 +61,18 @@ axelor-jbl/
 - Depuis la racine du projet :
 
 ```sh
-gradle wrapper          # une seule fois, pour générer ./gradlew
-./gradlew run           # build + démarre l'app sur http://localhost:8080
+./dev.sh                # DB (Docker) + app en mode dev avec hot reload
+./dev.sh --no-db        # si PostgreSQL tourne déjà ailleurs
+./dev.sh --no-watch     # sans la surveillance des sources Java
+./gradlew run           # équivalent manuel (build + démarre sur http://localhost:8080)
 ```
+
+`dev.sh` détecte automatiquement le JDK 21 et Gradle (wrapper `./gradlew` généré
+au besoin), démarre le service `db` du `docker-compose.yml`, puis lance
+`./gradlew run`. En mode `dev`, AOP recharge à chaud les vues XML, domaines et
+i18n ; le script surveille en plus `src/main/java` et relance l'app quand le
+code Java change (installer `fswatch` — `brew install fswatch` — pour une
+détection instantanée, sinon repli sur un polling de 2 s).
 
 Login par défaut AOP en mode dev : `admin` / `admin`.
 
