@@ -1,0 +1,30 @@
+# ---------------------------------------------------------------------------
+# JBL Atelier - configuration mise
+# https://mise.jdx.dev/configuration.html
+# ---------------------------------------------------------------------------
+
+[tools]
+java = "21"          # JDK 21 requis par AOP 8.2 / AOS 9.x (build.gradle)
+gradle = "8.14.5"    # Version du wrapper Gradle (gradle-wrapper.properties)
+docker-compose = "latest"  # docker-compose.yml (PostgreSQL 16 + app)
+
+# PostgreSQL client (optionnel, pour scripts/reset-dev-db.sh)
+# psql = "16"
+
+# Note: JAVA_HOME est automatiquement défini par mise lors de l'activation de Java
+
+[tasks.dev]
+description = "Lance le projet en mode dev (DB + app avec hot reload)"
+run = "./dev.sh"
+
+[tasks.build]
+description = "Build le WAR avec Gradle"
+run = "./gradlew clean build"
+
+[tasks.docker-up]
+description = "Démarre les conteneurs Docker (DB + app)"
+run = "docker-compose up -d"
+
+[tasks.docker-down]
+description = "Arrête les conteneurs Docker"
+run = "docker-compose down"
